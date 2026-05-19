@@ -1,0 +1,242 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "msilvis-ai-skills",
+  "description": "Mike Silvis' library of reusable AI skills for repo workflows, ops, framework references, and site generation.",
+  "owner": {
+    "name": "Mike Silvis",
+    "email": "mikesilvis@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "bug-bash",
+      "description": "Collect a batch of bugs / issues / changes from the user, then categorize them and dispatch parallel subagents — one per category — each working in its own git worktree to fix that category's items. Use when the user invokes `/msilvis:bug-bash` or says \"bug bash\", \"let's bug bash\", \"queue up some fixes\", or otherwise signals they want to dump a list of issues and have them worked in parallel.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/bug-bash",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/bug-bash"
+    },
+    {
+      "name": "circleci-failing-builds",
+      "description": "Diagnose and fix failing CircleCI builds. Use when the user asks to investigate CI failures, fix a broken build, or debug CircleCI pipeline issues.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/circleci-failing-builds",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/circleci-failing-builds"
+    },
+    {
+      "name": "code-quality",
+      "description": "Full code quality pass — runs /review to find and fix all issues, then runs /simplify with framework-aware focus areas. Use when asked to improve code quality, clean up a repo, or run a full quality pass.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/code-quality",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/code-quality"
+    },
+    {
+      "name": "code-quality-ship",
+      "description": "Full code quality pass that auto-merges the PR when CI is green and the change is simple enough. Runs /msilvis:code-quality, then gates a squash-merge on a strict simplicity checklist. Use when the user wants to ship a small PR end-to-end with one command.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/code-quality-ship",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/code-quality-ship"
+    },
+    {
+      "name": "coolify",
+      "description": "Manage Coolify self-hosting platform via Playwright browser automation. Use when the user asks to deploy, check status, manage services, view logs, or configure anything in Coolify.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/coolify",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/coolify"
+    },
+    {
+      "name": "coolify-disk-cleanup",
+      "description": "Free disk space on a Coolify server via the web app's built-in terminal. Use when Coolify warns about low disk space, or the user says \"clean up coolify disk\", \"free space on the server\", \"coolify is running out of room\", or similar. Related to the `coolify` skill — same login, but drives the in-app terminal instead of the dashboard pages.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/coolify-disk-cleanup",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/coolify-disk-cleanup"
+    },
+    {
+      "name": "github-pr-comment-resolution",
+      "description": "Help resolve GitHub pull request review comments using the GitHub CLI (`gh`). Use when the user asks to address, resolve, or summarize PR comments, update code accordingly, and optionally draft or post replies back to GitHub.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/github-pr-comment-resolution",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/github-pr-comment-resolution"
+    },
+    {
+      "name": "ios-simulator",
+      "description": "Build the current repo's iOS app with xcodebuild and run it on the iOS Simulator. Use when the user asks to build, run, install, or interact with their app on the simulator.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/ios-simulator",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/ios-simulator"
+    },
+    {
+      "name": "manage-skills",
+      "description": "Create, edit, or manage Claude/Codex/Cursor AI skills. Use when the user wants to add, update, or remove skills or agent instructions.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/manage-skills",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/manage-skills"
+    },
+    {
+      "name": "perf-audit",
+      "description": "On-demand performance audit for a Next.js + SigNoz app. Gathers slow routes from bundle sizes, Web Vitals RUM, and backend traces, then fans out parallel subagents — one per finding, each in its own worktree — that open PRs against the worst offenders. Repo-agnostic; reads `.claude/perf.json` from the current repo for thresholds and signal sources. Stops at \"ready for review\"; never auto-merges. Use when the user says \"run a perf audit\", \"audit performance\", \"find slow routes\", or invokes `/msilvis:perf-audit`.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/perf-audit",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/perf-audit"
+    },
+    {
+      "name": "pr-test-runner",
+      "description": "Run the test plan checklist of a GitHub PR automatically. Parses the `## Test plan` markdown checklist, executes each item via Playwright (browser flows) or Bash (CLI checks), attempts to fix failures by editing source and re-running, flips passing items to `- [x]` in the PR body, commits + pushes any fixes, and posts a summary comment with pass/fixed/fail/skip results. Use when the user says \"run the test plan\", \"verify this PR\", \"check off the test cases\", or invokes `/msilvis:pr-test-runner` explicitly.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/pr-test-runner",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/pr-test-runner"
+    },
+    {
+      "name": "prisma-cli",
+      "description": "Prisma CLI commands reference covering all available commands, options, and usage patterns. Use when running Prisma CLI commands, setting up projects, generating client, running migrations, or managing databases. Triggers on \"prisma init\", \"prisma generate\", \"prisma migrate\", \"prisma db\", \"prisma studio\".",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/prisma-cli",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/prisma-cli"
+    },
+    {
+      "name": "prisma-client-api",
+      "description": "Prisma Client API reference covering model queries, filtering, relations, transactions, and raw SQL for Prisma ORM 7.x. Use when writing database queries, performing CRUD operations, filtering/sorting data, working with relations, or using transactions.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/prisma-client-api",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/prisma-client-api"
+    },
+    {
+      "name": "qa-run",
+      "description": "Run a full visual and functional QA pass on a web app. Audits every page on desktop and mobile, dispatches fixes to other agents, re-verifies, and opens a PR when everything passes. Works across any web project — detects routes, dev URL, and validate command from the repo. Supports focused modes (e.g. `silly-classic`) that scope the run to a single feature and run domain-specific functional flows (team creation, scoring, winners) on top of the visual audit.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/qa-run",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/qa-run"
+    },
+    {
+      "name": "react-view-transitions",
+      "description": "Implement CSS View Transitions API in Next.js App Router using next-view-transitions. Use when building page transitions, route animations, or the user mentions view transitions in a Next.js project.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/react-view-transitions",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/react-view-transitions"
+    },
+    {
+      "name": "repo-setup",
+      "description": "Set up a new or cloned repository for local development. Use when the user asks to scaffold a new project, bootstrap a repo, set up local dev environment, configure local domains/proxy, or get a project running locally.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/repo-setup",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/repo-setup"
+    },
+    {
+      "name": "signoz-logs",
+      "description": "Query and analyze SigNoz logs, traces, and observability data. Use when the user asks to check logs, investigate errors, debug issues, or pull data from SigNoz.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/signoz-logs",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/signoz-logs"
+    },
+    {
+      "name": "site-modernize",
+      "description": "Modernize an existing public website into a new static Next.js site from a user-provided template or starter. Crawls the source URL, downloads assets, extracts content, scaffolds the project, and coordinates parallel subagents for generalized modernization tasks. Use when the user says \"modernize this site\", \"rebuild this site\", \"refresh <url>\", \"clone <url> as a new site\", or provides a website URL and asks for a rewrite.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/site-modernize",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/site-modernize"
+    },
+    {
+      "name": "stripe",
+      "description": "Stripe API and dashboard operations via MCP. Use when the user asks about Stripe payments, customers, subscriptions, invoices, products, prices, charges, refunds, payment intents, checkout sessions, webhooks, or any Stripe-related task. Triggers on \"stripe\", \"payment\", \"subscription\", \"invoice\", \"checkout\", \"webhook\".",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/stripe",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/stripe"
+    },
+    {
+      "name": "swiftui-expert-skill",
+      "description": "Use when writing, reviewing, or refactoring SwiftUI code for iOS or macOS, including state management, view composition, performance, Liquid Glass adoption, or Instruments `.trace` capture/analysis for hangs, hitches, CPU hotspots, or excessive view updates.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/swiftui-expert-skill",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/swiftui-expert-skill"
+    },
+    {
+      "name": "update-swiftui-apis",
+      "description": "Scan Apple's SwiftUI documentation for deprecated APIs and update the SwiftUI Expert Skill with modern replacements. Use when asked to \"update latest APIs\", \"refresh deprecated SwiftUI APIs\", \"check for new SwiftUI deprecations\", \"scan for API changes\", or after a new iOS/Xcode release. Requires the Sosumi MCP to be available.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/update-swiftui-apis",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/update-swiftui-apis"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "qa-run",
+  "version": "0.1.0",
+  "description": "Run a full visual and functional QA pass on a web app.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/qa-run",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Qa Run",
+    "shortDescription": "Run a full visual and functional QA pass on a web app. Audits every page on desktop and mobile, dispatches fixes to other agents, re-verifie",
+    "longDescription": "Run a full visual and functional QA pass on a web app. Audits every page on desktop and mobile, dispatches fixes to other agents, re-verifies, and opens a PR when everything passes. Works across any web project — detects routes, dev URL, and validate command from the repo. Supports focused modes (e.g. `silly-classic`) that scope the run to a single feature and run domain-specific functional flows (team creation, scoring, winners) on top of the visual audit.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/qa-run"
+  }
+}

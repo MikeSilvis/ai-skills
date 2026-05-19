@@ -1,0 +1,9 @@
+{
+  "name": "manage-skills",
+  "description": "Create, edit, or manage Claude/Codex/Cursor AI skills. Use when the user wants to add, update, or remove skills or agent instructions.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/manage-skills"
+}

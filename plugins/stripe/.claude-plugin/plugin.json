@@ -1,0 +1,9 @@
+{
+  "name": "stripe",
+  "description": "Stripe API and dashboard operations via MCP. Use when the user asks about Stripe payments, customers, subscriptions, invoices, products, prices, charges, refunds, payment intents, checkout sessions, webhooks, or any Stripe-related task. Triggers on \"stripe\", \"payment\", \"subscription\", \"invoice\", \"checkout\", \"webhook\".",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/stripe"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "ios-simulator",
+  "description": "Build the current repo's iOS app with xcodebuild and run it on the iOS Simulator. Use when the user asks to build, run, install, or interact with their app on the simulator.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/ios-simulator"
+}

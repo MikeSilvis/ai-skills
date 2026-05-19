@@ -5,10 +5,250 @@
   },
   "plugins": [
     {
+      "name": "bug-bash",
+      "source": {
+        "source": "local",
+        "path": "./plugins/bug-bash"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "circleci-failing-builds",
+      "source": {
+        "source": "local",
+        "path": "./plugins/circleci-failing-builds"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "code-quality",
+      "source": {
+        "source": "local",
+        "path": "./plugins/code-quality"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "code-quality-ship",
+      "source": {
+        "source": "local",
+        "path": "./plugins/code-quality-ship"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "coolify",
+      "source": {
+        "source": "local",
+        "path": "./plugins/coolify"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "coolify-disk-cleanup",
+      "source": {
+        "source": "local",
+        "path": "./plugins/coolify-disk-cleanup"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "github-pr-comment-resolution",
+      "source": {
+        "source": "local",
+        "path": "./plugins/github-pr-comment-resolution"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "ios-simulator",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ios-simulator"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "manage-skills",
+      "source": {
+        "source": "local",
+        "path": "./plugins/manage-skills"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "perf-audit",
+      "source": {
+        "source": "local",
+        "path": "./plugins/perf-audit"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "pr-test-runner",
+      "source": {
+        "source": "local",
+        "path": "./plugins/pr-test-runner"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "prisma-cli",
+      "source": {
+        "source": "local",
+        "path": "./plugins/prisma-cli"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "prisma-client-api",
+      "source": {
+        "source": "local",
+        "path": "./plugins/prisma-client-api"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "qa-run",
+      "source": {
+        "source": "local",
+        "path": "./plugins/qa-run"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "react-view-transitions",
+      "source": {
+        "source": "local",
+        "path": "./plugins/react-view-transitions"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "repo-setup",
+      "source": {
+        "source": "local",
+        "path": "./plugins/repo-setup"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "signoz-logs",
+      "source": {
+        "source": "local",
+        "path": "./plugins/signoz-logs"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
       "name": "site-modernize",
       "source": {
         "source": "local",
         "path": "./plugins/site-modernize"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "stripe",
+      "source": {
+        "source": "local",
+        "path": "./plugins/stripe"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "swiftui-expert-skill",
+      "source": {
+        "source": "local",
+        "path": "./plugins/swiftui-expert-skill"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "update-swiftui-apis",
+      "source": {
+        "source": "local",
+        "path": "./plugins/update-swiftui-apis"
       },
       "policy": {
         "installation": "AVAILABLE",

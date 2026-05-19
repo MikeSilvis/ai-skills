@@ -1,77 +1,59 @@
 # AI Skills
 
-A small library of reusable AI assistant skills for **Codex**, **Claude Code**, and
-**Cursor**. Each skill is a single Markdown file with YAML frontmatter that tells
-the assistant when to invoke it and what to do.
+A plugin marketplace of reusable AI assistant skills for **Claude Code** and
+**Codex**. Each skill is a small package with YAML frontmatter that tells the
+assistant when to invoke it and what to do.
 
 Skills cover repo workflows (`bug-bash`, `pr-test-runner`, `code-quality`),
 framework references (`prisma-cli`, `prisma-client-api`, `react-view-transitions`),
 tooling and ops (`coolify`, `signoz-logs`, `circleci-failing-builds`,
-`ios-simulator`), and a handful of multi-file packages (`site-modernize`,
+`ios-simulator`), and a couple of multi-file packages (`site-modernize`,
 `swiftui-expert-skill`).
 
 ## Install
 
-Clone the repo somewhere local:
+### Claude Code
+
+Add the marketplace once, then install whichever skills you want:
 
 ```sh
-git clone https://github.com/MikeSilvis/ai-skills.git ~/Development/ai-skills
-cd ~/Development/ai-skills
+/plugin marketplace add MikeSilvis/ai-skills
+/plugin install bug-bash@msilvis-ai-skills
 ```
 
-Then install whichever skills you want, for whichever assistant you use. The
-examples below use `bug-bash`; substitute any name from the [catalog](#catalog).
+Substitute any name from the [catalog](#catalog). Run
+`/plugin marketplace update msilvis-ai-skills` later to pull in new or updated
+skills.
 
 ### Codex
 
-Codex skills live at `~/.codex/skills/<id>/SKILL.md`.
+Add the marketplace once:
 
 ```sh
-skill=bug-bash
-mkdir -p "$HOME/.codex/skills/$skill"
-cp "skills/$skill.md" "$HOME/.codex/skills/$skill/SKILL.md"
+codex plugin marketplace add MikeSilvis/ai-skills
 ```
 
-Some skills ship with companion reference files (e.g. `site-modernize`,
-`swiftui-expert-skill`). Install the whole directory so Codex can load the
-references progressively:
+Then enable plugins from inside Codex (the `/plugin` UI lists everything the
+marketplace publishes), or pin them directly in `~/.codex/config.toml`:
 
-```sh
-skill=site-modernize
-mkdir -p "$HOME/.codex/skills/$skill"
-cp "skills/$skill.md" "$HOME/.codex/skills/$skill/SKILL.md"
-cp -R "skills/$skill/." "$HOME/.codex/skills/$skill/"
+```toml
+[plugins."bug-bash@msilvis-ai-skills"]
+enabled = true
 ```
 
-### Claude Code
-
-Claude Code command skills live in `~/.claude/commands/`.
-
-```sh
-skill=bug-bash
-mkdir -p "$HOME/.claude/commands"
-cp "skills/$skill.md" "$HOME/.claude/commands/$skill.md"
-```
-
-Invoke with `/<skill-name>`, e.g. `/bug-bash`.
+`codex plugin marketplace upgrade msilvis-ai-skills` refreshes installed
+plugins.
 
 ### Cursor
 
-Cursor rules are project-local. From inside the repo where you want the skill
-available:
+Cursor doesn't have a plugin marketplace yet, so you copy the skill body into
+the project's rules directory:
 
 ```sh
 skill=bug-bash
 mkdir -p .cursor/rules
-cp "$HOME/Development/ai-skills/skills/$skill.md" ".cursor/rules/$skill.mdc"
-```
-
-### Update later
-
-`git pull` and re-run the same copy command to refresh.
-
-```sh
-cd ~/Development/ai-skills && git pull --ff-only
+curl -fsSL "https://raw.githubusercontent.com/MikeSilvis/ai-skills/main/plugins/$skill/skills/$skill/SKILL.md" \
+  -o ".cursor/rules/$skill.mdc"
 ```
 
 ## Catalog
@@ -128,13 +110,29 @@ Most skills are plain instructions, but some lean on outside tools:
   and a usable simulator runtime. `update-swiftui-apis` also needs the Sosumi MCP.
 - **`prisma-cli`, `prisma-client-api`** — assume Prisma is installed in your project.
 
+## Repo layout
+
+```
+.claude-plugin/marketplace.json    # Claude Code marketplace index
+.agents/plugins/marketplace.json   # Codex marketplace index
+
+plugins/<name>/
+  .claude-plugin/plugin.json       # Claude Code plugin manifest
+  .codex-plugin/plugin.json        # Codex plugin manifest
+  skills/<name>/SKILL.md           # canonical skill body
+  skills/<name>/references/        # optional supporting docs
+  skills/<name>/scripts/           # optional helper scripts
+```
+
 ## Contributing
 
-- Skill sources live under `skills/`. Names are lowercase and hyphenated.
-- Single-file skills are `skills/<name>.md`. Multi-file packages live in
-  `skills/<name>/` alongside the entrypoint at `skills/<name>.md`.
-- Every command skill must have YAML frontmatter with at least `name` and
-  `description` — assistants use the description to decide when to invoke.
-- Distributable Codex plugins go under `plugins/<name>/` with a
-  `.codex-plugin/plugin.json` manifest. See `plugins/site-modernize/` for the
-  shape.
+- Plugin names are lowercase and hyphenated. The plugin directory name, the
+  skill name in its YAML frontmatter, and the entries in both `marketplace.json`
+  files must all match.
+- To add a new skill: create `plugins/<name>/` with the four files above, then
+  add an entry to **both** `.claude-plugin/marketplace.json` and
+  `.agents/plugins/marketplace.json` so Claude Code and Codex can both see it.
+- Every `SKILL.md` needs YAML frontmatter with at least `name` and
+  `description` — the description is the trigger string the assistant uses to
+  decide when to invoke the skill, so write it as a sentence about *when* to
+  use the skill, not a tagline.

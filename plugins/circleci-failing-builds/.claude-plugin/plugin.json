@@ -1,0 +1,9 @@
+{
+  "name": "circleci-failing-builds",
+  "description": "Diagnose and fix failing CircleCI builds. Use when the user asks to investigate CI failures, fix a broken build, or debug CircleCI pipeline issues.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/circleci-failing-builds"
+}

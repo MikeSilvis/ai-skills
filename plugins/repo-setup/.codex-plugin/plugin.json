@@ -1,0 +1,26 @@
+{
+  "name": "repo-setup",
+  "version": "0.1.0",
+  "description": "Set up a new or cloned repository for local development.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/repo-setup",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Repo Setup",
+    "shortDescription": "Set up a new or cloned repository for local development. Use when the user asks to scaffold a new project, bootstrap a repo, set up local de",
+    "longDescription": "Set up a new or cloned repository for local development. Use when the user asks to scaffold a new project, bootstrap a repo, set up local dev environment, configure local domains/proxy, or get a project running locally.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/repo-setup"
+  }
+}

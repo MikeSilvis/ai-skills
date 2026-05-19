@@ -1,1 +1,0 @@
-swiftui-expert-skill/SKILL.md

@@ -1,0 +1,26 @@
+{
+  "name": "signoz-logs",
+  "version": "0.1.0",
+  "description": "Query and analyze SigNoz logs, traces, and observability data.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/signoz-logs",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Signoz Logs",
+    "shortDescription": "Query and analyze SigNoz logs, traces, and observability data. Use when the user asks to check logs, investigate errors, debug issues, or pu",
+    "longDescription": "Query and analyze SigNoz logs, traces, and observability data. Use when the user asks to check logs, investigate errors, debug issues, or pull data from SigNoz.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/signoz-logs"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "circleci-failing-builds",
+  "version": "0.1.0",
+  "description": "Diagnose and fix failing CircleCI builds.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/circleci-failing-builds",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Circleci Failing Builds",
+    "shortDescription": "Diagnose and fix failing CircleCI builds. Use when the user asks to investigate CI failures, fix a broken build, or debug CircleCI pipeline ",
+    "longDescription": "Diagnose and fix failing CircleCI builds. Use when the user asks to investigate CI failures, fix a broken build, or debug CircleCI pipeline issues.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/circleci-failing-builds"
+  }
+}

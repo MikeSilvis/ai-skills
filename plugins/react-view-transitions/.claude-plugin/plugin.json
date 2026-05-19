@@ -1,0 +1,9 @@
+{
+  "name": "react-view-transitions",
+  "description": "Implement CSS View Transitions API in Next.js App Router using next-view-transitions. Use when building page transitions, route animations, or the user mentions view transitions in a Next.js project.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/react-view-transitions"
+}

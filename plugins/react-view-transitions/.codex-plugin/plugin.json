@@ -1,0 +1,26 @@
+{
+  "name": "react-view-transitions",
+  "version": "0.1.0",
+  "description": "Implement CSS View Transitions API in Next.js App Router using next-view-transitions.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/react-view-transitions",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "React View Transitions",
+    "shortDescription": "Implement CSS View Transitions API in Next.js App Router using next-view-transitions. Use when building page transitions, route animations, ",
+    "longDescription": "Implement CSS View Transitions API in Next.js App Router using next-view-transitions. Use when building page transitions, route animations, or the user mentions view transitions in a Next.js project.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/react-view-transitions"
+  }
+}
