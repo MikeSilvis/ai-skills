@@ -6,8 +6,8 @@
     "name": "Mike Silvis",
     "url": "https://github.com/MikeSilvis"
   },
-  "homepage": "https://github.com/MikeSilvis/dotfiles/tree/main/plugins/site-modernize",
-  "repository": "https://github.com/MikeSilvis/dotfiles",
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/site-modernize",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
   "license": "MIT",
   "keywords": [
     "website",
@@ -27,7 +27,7 @@
       "Write",
       "Interactive"
     ],
-    "websiteURL": "https://github.com/MikeSilvis/dotfiles/tree/main/plugins/site-modernize",
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/site-modernize",
     "defaultPrompt": [
       "Modernize this website into a static Next.js site",
       "Refresh this site using my template",
