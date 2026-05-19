@@ -1,0 +1,26 @@
+{
+  "name": "swiftui-expert-skill",
+  "version": "0.1.0",
+  "description": "Use when writing, reviewing, or refactoring SwiftUI code for iOS or macOS, including state management, view composition, performance, Liquid Glass adoption, or Instruments `.trace` capture/analysis for hangs, hitches, CPU hotspots, or excessive view updates.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/swiftui-expert-skill",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Swiftui Expert Skill",
+    "shortDescription": "Use when writing, reviewing, or refactoring SwiftUI code for iOS or macOS, including state management, view composition, performance, Liquid",
+    "longDescription": "Use when writing, reviewing, or refactoring SwiftUI code for iOS or macOS, including state management, view composition, performance, Liquid Glass adoption, or Instruments `.trace` capture/analysis for hangs, hitches, CPU hotspots, or excessive view updates.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/swiftui-expert-skill"
+  }
+}

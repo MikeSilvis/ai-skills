@@ -1,0 +1,9 @@
+{
+  "name": "repo-setup",
+  "description": "Set up a new or cloned repository for local development. Use when the user asks to scaffold a new project, bootstrap a repo, set up local dev environment, configure local domains/proxy, or get a project running locally.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/repo-setup"
+}

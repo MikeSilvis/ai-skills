@@ -1,1 +1,0 @@
-update-swiftui-apis/SKILL.md

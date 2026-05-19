@@ -1,0 +1,9 @@
+{
+  "name": "coolify-disk-cleanup",
+  "description": "Free disk space on a Coolify server via the web app's built-in terminal. Use when Coolify warns about low disk space, or the user says \"clean up coolify disk\", \"free space on the server\", \"coolify is running out of room\", or similar. Related to the `coolify` skill — same login, but drives the in-app terminal instead of the dashboard pages.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/coolify-disk-cleanup"
+}

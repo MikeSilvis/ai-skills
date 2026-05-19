@@ -1,0 +1,9 @@
+{
+  "name": "coolify",
+  "description": "Manage Coolify self-hosting platform via Playwright browser automation. Use when the user asks to deploy, check status, manage services, view logs, or configure anything in Coolify.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/coolify"
+}

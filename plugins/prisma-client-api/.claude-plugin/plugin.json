@@ -1,0 +1,9 @@
+{
+  "name": "prisma-client-api",
+  "description": "Prisma Client API reference covering model queries, filtering, relations, transactions, and raw SQL for Prisma ORM 7.x. Use when writing database queries, performing CRUD operations, filtering/sorting data, working with relations, or using transactions.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/prisma-client-api"
+}

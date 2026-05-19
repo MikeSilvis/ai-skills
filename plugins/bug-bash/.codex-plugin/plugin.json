@@ -1,0 +1,26 @@
+{
+  "name": "bug-bash",
+  "version": "0.1.0",
+  "description": "Collect a batch of bugs / issues / changes from the user, then categorize them and dispatch parallel subagents — one per category — each working in its own git worktree to fix that category's items.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/bug-bash",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Bug Bash",
+    "shortDescription": "Collect a batch of bugs / issues / changes from the user, then categorize them and dispatch parallel subagents — one per category — each wor",
+    "longDescription": "Collect a batch of bugs / issues / changes from the user, then categorize them and dispatch parallel subagents — one per category — each working in its own git worktree to fix that category's items. Use when the user invokes `/msilvis:bug-bash` or says \"bug bash\", \"let's bug bash\", \"queue up some fixes\", or otherwise signals they want to dump a list of issues and have them worked in parallel.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/bug-bash"
+  }
+}

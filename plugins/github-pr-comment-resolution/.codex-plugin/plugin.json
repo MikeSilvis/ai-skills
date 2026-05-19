@@ -1,0 +1,26 @@
+{
+  "name": "github-pr-comment-resolution",
+  "version": "0.1.0",
+  "description": "Help resolve GitHub pull request review comments using the GitHub CLI (`gh`).",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/github-pr-comment-resolution",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Github Pr Comment Resolution",
+    "shortDescription": "Help resolve GitHub pull request review comments using the GitHub CLI (`gh`). Use when the user asks to address, resolve, or summarize PR co",
+    "longDescription": "Help resolve GitHub pull request review comments using the GitHub CLI (`gh`). Use when the user asks to address, resolve, or summarize PR comments, update code accordingly, and optionally draft or post replies back to GitHub.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/github-pr-comment-resolution"
+  }
+}

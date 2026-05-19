@@ -1,0 +1,26 @@
+{
+  "name": "pr-test-runner",
+  "version": "0.1.0",
+  "description": "Run the test plan checklist of a GitHub PR automatically.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/pr-test-runner",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Pr Test Runner",
+    "shortDescription": "Run the test plan checklist of a GitHub PR automatically. Parses the `## Test plan` markdown checklist, executes each item via Playwright (b",
+    "longDescription": "Run the test plan checklist of a GitHub PR automatically. Parses the `## Test plan` markdown checklist, executes each item via Playwright (browser flows) or Bash (CLI checks), attempts to fix failures by editing source and re-running, flips passing items to `- [x]` in the PR body, commits + pushes any fixes, and posts a summary comment with pass/fixed/fail/skip results. Use when the user says \"run the test plan\", \"verify this PR\", \"check off the test cases\", or invokes `/msilvis:pr-test-runner` explicitly.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/pr-test-runner"
+  }
+}

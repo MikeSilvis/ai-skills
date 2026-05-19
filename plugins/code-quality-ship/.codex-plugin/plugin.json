@@ -1,0 +1,26 @@
+{
+  "name": "code-quality-ship",
+  "version": "0.1.0",
+  "description": "Full code quality pass that auto-merges the PR when CI is green and the change is simple enough.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/code-quality-ship",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Code Quality Ship",
+    "shortDescription": "Full code quality pass that auto-merges the PR when CI is green and the change is simple enough. Runs /msilvis:code-quality, then gates a sq",
+    "longDescription": "Full code quality pass that auto-merges the PR when CI is green and the change is simple enough. Runs /msilvis:code-quality, then gates a squash-merge on a strict simplicity checklist. Use when the user wants to ship a small PR end-to-end with one command.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/code-quality-ship"
+  }
+}

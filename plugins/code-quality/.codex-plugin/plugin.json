@@ -1,0 +1,26 @@
+{
+  "name": "code-quality",
+  "version": "0.1.0",
+  "description": "Full code quality pass — runs /review to find and fix all issues, then runs /simplify with framework-aware focus areas.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/code-quality",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Code Quality",
+    "shortDescription": "Full code quality pass — runs /review to find and fix all issues, then runs /simplify with framework-aware focus areas. Use when asked to im",
+    "longDescription": "Full code quality pass — runs /review to find and fix all issues, then runs /simplify with framework-aware focus areas. Use when asked to improve code quality, clean up a repo, or run a full quality pass.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/code-quality"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "site-modernize",
+  "description": "Modernize an existing public website into a new static Next.js site from a user-provided template or starter. Crawls the source URL, downloads assets, extracts content, scaffolds the project, and coordinates parallel subagents for generalized modernization tasks. Use when the user says \"modernize this site\", \"rebuild this site\", \"refresh <url>\", \"clone <url> as a new site\", or provides a website URL and asks for a rewrite.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/site-modernize"
+}
