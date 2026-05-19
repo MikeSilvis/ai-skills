@@ -1,0 +1,1 @@
+../plugins/site-modernize/skills/site-modernize/SKILL.md

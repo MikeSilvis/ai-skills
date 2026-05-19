@@ -1,0 +1,39 @@
+{
+  "name": "site-modernize",
+  "version": "0.1.0",
+  "description": "Modernize an existing public website into a static Next.js site from a user-provided template.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/dotfiles/tree/main/plugins/site-modernize",
+  "repository": "https://github.com/MikeSilvis/dotfiles",
+  "license": "MIT",
+  "keywords": [
+    "website",
+    "nextjs",
+    "static-site",
+    "modernization"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Site Modernize",
+    "shortDescription": "Rebuild an existing website as a modern static Next.js site",
+    "longDescription": "Site Modernize guides Codex through crawling an existing public website, extracting real content and assets, applying a user-provided template, composing a data-driven static Next.js site, and validating SEO, metadata, and build output.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/dotfiles/tree/main/plugins/site-modernize",
+    "defaultPrompt": [
+      "Modernize this website into a static Next.js site",
+      "Refresh this site using my template",
+      "Rebuild this URL as a data-driven marketing site"
+    ],
+    "brandColor": "#2563EB",
+    "screenshots": []
+  }
+}

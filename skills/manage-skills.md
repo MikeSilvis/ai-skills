@@ -1,0 +1,61 @@
+---
+name: manage-skills
+description: Create, edit, or manage Claude/Codex/Cursor AI skills. Use when the user wants to add, update, or remove skills or agent instructions.
+---
+
+# Managing AI Skills
+
+Skills live in the AI skills repo at `~/Development/ai-skills/skills/`. Each `.md` file in that directory becomes a skill.
+
+## Two Formats
+
+### Always-on (no frontmatter)
+
+Content is injected into `~/.codex/AGENTS.md`, referenced by `~/.claude/CLAUDE.md`, and emitted to Cursor rules. Use for coding standards, style guides, and rules that should always apply.
+
+```markdown
+# Code Style
+
+- Prefer simple, readable code over clever abstractions
+- Use descriptive variable and function names
+```
+
+### Command skill (YAML frontmatter)
+
+Becomes an invokable `/msilvis:<name>` command in Claude Code, a discoverable Codex skill, and a manual rule in Cursor.
+
+```markdown
+---
+name: my-skill
+description: Short description of when to use this skill.
+---
+
+# My Skill
+
+Instructions go here...
+```
+
+## Workflow
+
+**Command skills** are symlinked from the dotfiles repo into `~/.claude/commands/msilvis:<name>.md` and `~/.codex/skills/msilvis-<name>/SKILL.md`, and copied into `~/.cursor/rules/<name>.mdc`. Edits to the source file take effect immediately for Claude and Codex; run `dotfiles-sync` to refresh Cursor's generated copy.
+
+Command skills can bundle optional Codex resources in `skills/<name>/` (for example `skills/site-modernize/references/*.md`). `dotfiles-sync` symlinks those resources next to `~/.codex/skills/msilvis-<name>/SKILL.md` so the skill can keep bulky details behind progressive-disclosure references.
+
+**Always-on skills** are merged into `~/.codex/AGENTS.md`, included from `~/.claude/CLAUDE.md`, and emitted to Cursor. After editing, run `dotfiles-sync` to apply changes.
+
+**Important:** Always edit files in `~/Development/ai-skills/skills/`, never in `~/.claude/commands/`, `~/.claude/CLAUDE.md`, or `~/.codex/AGENTS.md` directly. Those are generated/symlinked outputs.
+
+All custom skills are prefixed with `msilvis:` (e.g., `/msilvis:my-skill`).
+
+## Distributable Codex Plugins
+
+Reusable skills that should be installable outside this dotfiles repo can live under `plugins/<name>/` with a `.codex-plugin/plugin.json` manifest and a `skills/<name>/SKILL.md` file. Add the plugin to `.agents/plugins/marketplace.json` so another Codex install can add this repo as a plugin marketplace.
+
+If the same skill should remain available through dotfiles-sync, keep the `skills/<name>.md` command skill as a symlink to `plugins/<name>/skills/<name>/SKILL.md`, and keep `skills/<name>/` as a symlink to the plugin skill directory so bundled references still sync into `~/.codex/skills/msilvis-<name>/`.
+
+## Guidelines
+
+- Keep skill names lowercase and hyphenated (e.g., `my-skill.md`)
+- Write clear descriptions in frontmatter so Claude knows when to invoke the command
+- Keep always-on skills concise since they consume context in every conversation
+- Prefer command skills for task-specific workflows that don't need to be always active
