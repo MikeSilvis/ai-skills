@@ -129,28 +129,6 @@
       "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/pr-test-runner"
     },
     {
-      "name": "prisma-cli",
-      "description": "Prisma CLI commands reference covering all available commands, options, and usage patterns. Use when running Prisma CLI commands, setting up projects, generating client, running migrations, or managing databases. Triggers on \"prisma init\", \"prisma generate\", \"prisma migrate\", \"prisma db\", \"prisma studio\".",
-      "author": {
-        "name": "Mike Silvis",
-        "url": "https://github.com/MikeSilvis"
-      },
-      "category": "development",
-      "source": "./plugins/prisma-cli",
-      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/prisma-cli"
-    },
-    {
-      "name": "prisma-client-api",
-      "description": "Prisma Client API reference covering model queries, filtering, relations, transactions, and raw SQL for Prisma ORM 7.x. Use when writing database queries, performing CRUD operations, filtering/sorting data, working with relations, or using transactions.",
-      "author": {
-        "name": "Mike Silvis",
-        "url": "https://github.com/MikeSilvis"
-      },
-      "category": "development",
-      "source": "./plugins/prisma-client-api",
-      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/prisma-client-api"
-    },
-    {
       "name": "qa-run",
       "description": "Run a full visual and functional QA pass on a web app. Audits every page on desktop and mobile, dispatches fixes to other agents, re-verifies, and opens a PR when everything passes. Works across any web project — detects routes, dev URL, and validate command from the repo. Supports focused modes (e.g. `silly-classic`) that scope the run to a single feature and run domain-specific functional flows (team creation, scoring, winners) on top of the visual audit.",
       "author": {
@@ -184,17 +162,6 @@
       "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/repo-setup"
     },
     {
-      "name": "signoz-logs",
-      "description": "Query and analyze SigNoz logs, traces, and observability data. Use when the user asks to check logs, investigate errors, debug issues, or pull data from SigNoz.",
-      "author": {
-        "name": "Mike Silvis",
-        "url": "https://github.com/MikeSilvis"
-      },
-      "category": "development",
-      "source": "./plugins/signoz-logs",
-      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/signoz-logs"
-    },
-    {
       "name": "site-modernize",
       "description": "Modernize an existing public website into a new static Next.js site from a user-provided template or starter. Crawls the source URL, downloads assets, extracts content, scaffolds the project, and coordinates parallel subagents for generalized modernization tasks. Use when the user says \"modernize this site\", \"rebuild this site\", \"refresh <url>\", \"clone <url> as a new site\", or provides a website URL and asks for a rewrite.",
       "author": {
@@ -204,39 +171,6 @@
       "category": "development",
       "source": "./plugins/site-modernize",
       "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/site-modernize"
-    },
-    {
-      "name": "stripe",
-      "description": "Stripe API and dashboard operations via MCP. Use when the user asks about Stripe payments, customers, subscriptions, invoices, products, prices, charges, refunds, payment intents, checkout sessions, webhooks, or any Stripe-related task. Triggers on \"stripe\", \"payment\", \"subscription\", \"invoice\", \"checkout\", \"webhook\".",
-      "author": {
-        "name": "Mike Silvis",
-        "url": "https://github.com/MikeSilvis"
-      },
-      "category": "development",
-      "source": "./plugins/stripe",
-      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/stripe"
-    },
-    {
-      "name": "swiftui-expert-skill",
-      "description": "Use when writing, reviewing, or refactoring SwiftUI code for iOS or macOS, including state management, view composition, performance, Liquid Glass adoption, or Instruments `.trace` capture/analysis for hangs, hitches, CPU hotspots, or excessive view updates.",
-      "author": {
-        "name": "Mike Silvis",
-        "url": "https://github.com/MikeSilvis"
-      },
-      "category": "development",
-      "source": "./plugins/swiftui-expert-skill",
-      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/swiftui-expert-skill"
-    },
-    {
-      "name": "update-swiftui-apis",
-      "description": "Scan Apple's SwiftUI documentation for deprecated APIs and update the SwiftUI Expert Skill with modern replacements. Use when asked to \"update latest APIs\", \"refresh deprecated SwiftUI APIs\", \"check for new SwiftUI deprecations\", \"scan for API changes\", or after a new iOS/Xcode release. Requires the Sosumi MCP to be available.",
-      "author": {
-        "name": "Mike Silvis",
-        "url": "https://github.com/MikeSilvis"
-      },
-      "category": "development",
-      "source": "./plugins/update-swiftui-apis",
-      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/update-swiftui-apis"
     }
   ]
 }

@@ -1,9 +1,0 @@
-{
-  "name": "signoz-logs",
-  "description": "Query and analyze SigNoz logs, traces, and observability data. Use when the user asks to check logs, investigate errors, debug issues, or pull data from SigNoz.",
-  "author": {
-    "name": "Mike Silvis",
-    "url": "https://github.com/MikeSilvis"
-  },
-  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/signoz-logs"
-}
