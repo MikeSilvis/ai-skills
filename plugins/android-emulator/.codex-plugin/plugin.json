@@ -1,0 +1,26 @@
+{
+  "name": "android-emulator",
+  "version": "0.1.0",
+  "description": "Build, run, view, and interact with Android apps on an emulator or connected device.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/android-emulator",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Android Emulator",
+    "shortDescription": "Build, run, view, and interact with Android apps on an emulator or connected device.",
+    "longDescription": "Build, run, view, and interact with Android apps on an emulator or connected device. Use when the user asks to build, run, install, screenshot, tap, scroll, swipe, type, inspect, or debug an Android emulator/device.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/android-emulator"
+  }
+}

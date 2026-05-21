@@ -8,6 +8,17 @@
   },
   "plugins": [
     {
+      "name": "android-emulator",
+      "description": "Build, run, view, and interact with Android apps on an emulator or connected device. Use when the user asks to build, run, install, screenshot, tap, scroll, swipe, type, inspect, or debug an Android emulator/device.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/android-emulator",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/android-emulator"
+    },
+    {
       "name": "bug-bash",
       "description": "Collect a batch of bugs / issues / changes from the user, then categorize them and dispatch parallel subagents — one per category — each working in its own git worktree to fix that category's items. Use when the user invokes `/msilvis:bug-bash` or says \"bug bash\", \"let's bug bash\", \"queue up some fixes\", or otherwise signals they want to dump a list of issues and have them worked in parallel.",
       "author": {
@@ -86,7 +97,7 @@
     },
     {
       "name": "ios-simulator",
-      "description": "Build the current repo's iOS app with xcodebuild and run it on the iOS Simulator. Use when the user asks to build, run, install, or interact with their app on the simulator.",
+      "description": "Build, run, view, and interact with iOS apps on the Apple Simulator. Use when the user asks to build, run, install, stream, screenshot, tap, scroll, swipe, rotate, grant permissions, or inspect an app on an iOS/iPadOS/watchOS Simulator.",
       "author": {
         "name": "Mike Silvis",
         "url": "https://github.com/MikeSilvis"
