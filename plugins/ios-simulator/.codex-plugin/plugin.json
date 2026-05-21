@@ -1,7 +1,7 @@
 {
   "name": "ios-simulator",
   "version": "0.1.0",
-  "description": "Build the current repo's iOS app with xcodebuild and run it on the iOS Simulator.",
+  "description": "Build, run, view, and interact with iOS apps on the Apple Simulator.",
   "author": {
     "name": "Mike Silvis",
     "url": "https://github.com/MikeSilvis"
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Ios Simulator",
-    "shortDescription": "Build the current repo's iOS app with xcodebuild and run it on the iOS Simulator. Use when the user asks to build, run, install, or interact",
-    "longDescription": "Build the current repo's iOS app with xcodebuild and run it on the iOS Simulator. Use when the user asks to build, run, install, or interact with their app on the simulator.",
+    "shortDescription": "Build, run, view, and interact with iOS apps on the Apple Simulator.",
+    "longDescription": "Build, run, view, and interact with iOS apps on the Apple Simulator. Use when the user asks to build, run, install, stream, screenshot, tap, scroll, swipe, rotate, grant permissions, or inspect an app on an iOS/iPadOS/watchOS Simulator.",
     "developerName": "Mike Silvis",
     "category": "Engineering",
     "capabilities": [

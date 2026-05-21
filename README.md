@@ -80,7 +80,8 @@ curl -fsSL "https://raw.githubusercontent.com/MikeSilvis/ai-skills/main/plugins/
 | `signoz-logs` | Query SigNoz logs, traces, and observability data. |
 | `coolify` | Drive a Coolify dashboard via Playwright (deploys, status, logs, settings). |
 | `coolify-disk-cleanup` | Free disk space on a Coolify server through its web terminal. |
-| `ios-simulator` | Build and run the current repo's iOS app on the simulator. |
+| `android-emulator` | Build, run, view, and drive Android apps on an emulator or device. |
+| `ios-simulator` | Build, run, view, and drive iOS apps on the Apple Simulator. |
 
 ### Framework & API references
 
@@ -106,8 +107,11 @@ Most skills are plain instructions, but some lean on outside tools:
 - **GitHub / PR skills** — expect `gh` CLI installed and logged in.
 - **`qa-run`, `coolify`, `site-modernize`** — drive a browser via Playwright.
 - **`signoz-logs`, `perf-audit`, `stripe`** — expect the matching MCP server.
+- **`android-emulator`** — requires Android SDK platform tools (`adb`) and, for
+  emulator startup, the Android emulator binary plus at least one AVD.
 - **`ios-simulator`, `swiftui-expert-skill`, `update-swiftui-apis`** — require Xcode
-  and a usable simulator runtime. `update-swiftui-apis` also needs the Sosumi MCP.
+  and a usable simulator runtime. `ios-simulator` uses `npx serve-sim` for visual
+  interaction. `update-swiftui-apis` also needs the Sosumi MCP.
 - **`prisma-cli`, `prisma-client-api`** — assume Prisma is installed in your project.
 
 ## Repo layout

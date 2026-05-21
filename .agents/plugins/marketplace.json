@@ -5,6 +5,18 @@
   },
   "plugins": [
     {
+      "name": "android-emulator",
+      "source": {
+        "source": "local",
+        "path": "./plugins/android-emulator"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
       "name": "bug-bash",
       "source": {
         "source": "local",
