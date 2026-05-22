@@ -5,10 +5,9 @@ A plugin marketplace of reusable AI assistant skills for **Claude Code** and
 assistant when to invoke it and what to do.
 
 Skills cover repo workflows (`bug-bash`, `pr-test-runner`, `code-quality`),
-framework references (`prisma-cli`, `prisma-client-api`, `react-view-transitions`),
-tooling and ops (`coolify`, `signoz-logs`, `circleci-failing-builds`,
-`ios-simulator`), and a couple of multi-file packages (`site-modernize`,
-`swiftui-expert-skill`).
+frontend references (`react-view-transitions`), tooling and ops (`coolify`,
+`circleci-failing-builds`, `ios-simulator`), and multi-file site generation
+(`site-modernize`).
 
 ## Install
 
@@ -77,7 +76,6 @@ curl -fsSL "https://raw.githubusercontent.com/MikeSilvis/ai-skills/main/plugins/
 | --- | --- |
 | `circleci-failing-builds` | Investigate and fix broken CircleCI jobs. |
 | `perf-audit` | Find slow Next.js routes using bundle size, Web Vitals, and SigNoz signals. |
-| `signoz-logs` | Query SigNoz logs, traces, and observability data. |
 | `coolify` | Drive a Coolify dashboard via Playwright (deploys, status, logs, settings). |
 | `coolify-disk-cleanup` | Free disk space on a Coolify server through its web terminal. |
 | `android-emulator` | Build, run, view, and drive Android apps on an emulator or device. |
@@ -87,12 +85,7 @@ curl -fsSL "https://raw.githubusercontent.com/MikeSilvis/ai-skills/main/plugins/
 
 | Skill | Use when you want to… |
 | --- | --- |
-| `prisma-cli` | Run Prisma CLI commands (init, generate, migrate, db, studio). |
-| `prisma-client-api` | Write Prisma Client queries, relations, transactions, raw SQL. |
 | `react-view-transitions` | Add Next.js App Router transitions with `next-view-transitions`. |
-| `stripe` | Stripe API + dashboard operations via MCP (payments, subscriptions, webhooks). |
-| `swiftui-expert-skill` | Write/review SwiftUI code, including performance and `.trace` analysis. |
-| `update-swiftui-apis` | Scan Apple docs for deprecated SwiftUI APIs and update the SwiftUI skill. |
 
 ### Site generation
 
@@ -106,13 +99,11 @@ Most skills are plain instructions, but some lean on outside tools:
 
 - **GitHub / PR skills** — expect `gh` CLI installed and logged in.
 - **`qa-run`, `coolify`, `site-modernize`** — drive a browser via Playwright.
-- **`signoz-logs`, `perf-audit`, `stripe`** — expect the matching MCP server.
+- **`perf-audit`** — expects SigNoz signal access when backend traces are in scope.
 - **`android-emulator`** — requires Android SDK platform tools (`adb`) and, for
   emulator startup, the Android emulator binary plus at least one AVD.
-- **`ios-simulator`, `swiftui-expert-skill`, `update-swiftui-apis`** — require Xcode
-  and a usable simulator runtime. `ios-simulator` uses `npx serve-sim` for visual
-  interaction. `update-swiftui-apis` also needs the Sosumi MCP.
-- **`prisma-cli`, `prisma-client-api`** — assume Prisma is installed in your project.
+- **`ios-simulator`** — requires Xcode and a usable simulator runtime. It uses
+  `npx serve-sim` for visual interaction.
 
 ## Repo layout
 
