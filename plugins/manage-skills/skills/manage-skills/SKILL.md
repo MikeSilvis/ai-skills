@@ -5,7 +5,10 @@ description: Create, edit, or manage Claude/Codex/Cursor AI skills. Use when the
 
 # Managing AI Skills
 
-Skills live in the AI skills repo at `~/Development/ai-skills/skills/`. Each `.md` file in that directory becomes a skill.
+Skills live in two places:
+
+- Public, distributable skills live in `~/Development/ai-skills/plugins/<name>/`.
+- Personal/private always-on and command skills live in `~/Development/dotfiles/configs/ai/skills/`.
 
 ## Two Formats
 
@@ -37,13 +40,13 @@ Instructions go here...
 
 ## Workflow
 
-**Command skills** are symlinked from the dotfiles repo into `~/.claude/commands/msilvis:<name>.md` and `~/.codex/skills/msilvis-<name>/SKILL.md`, and copied into `~/.cursor/rules/<name>.mdc`. Edits to the source file take effect immediately for Claude and Codex; run `dotfiles-sync` to refresh Cursor's generated copy.
+**Command skills** are symlinked from the dotfiles repo into `~/.claude/commands/msilvis:<name>.md` and `~/.agents/skills/msilvis-<name>/SKILL.md`, and copied into `~/.cursor/rules/<name>.mdc`. Edits to the source file take effect immediately for Claude and Codex after `dotfiles-sync` refreshes the generated links and copies.
 
-Command skills can bundle optional Codex resources in `skills/<name>/` (for example `skills/site-modernize/references/*.md`). `dotfiles-sync` symlinks those resources next to `~/.codex/skills/msilvis-<name>/SKILL.md` so the skill can keep bulky details behind progressive-disclosure references.
+Command skills can bundle optional Codex resources in `configs/ai/skills/<name>/` (for example `configs/ai/skills/site-modernize/references/*.md`). `dotfiles-sync` symlinks those resources next to `~/.agents/skills/msilvis-<name>/SKILL.md` so the skill can keep bulky details behind progressive-disclosure references.
 
 **Always-on skills** are merged into `~/.codex/AGENTS.md`, included from `~/.claude/CLAUDE.md`, and emitted to Cursor. After editing, run `dotfiles-sync` to apply changes.
 
-**Important:** Always edit files in `~/Development/ai-skills/skills/`, never in `~/.claude/commands/`, `~/.claude/CLAUDE.md`, or `~/.codex/AGENTS.md` directly. Those are generated/symlinked outputs.
+**Important:** Always edit source files in `~/Development/dotfiles/configs/ai/skills/` for private skills or `~/Development/ai-skills/plugins/` for public plugin skills. Never edit `~/.claude/commands/`, `~/.claude/CLAUDE.md`, `~/.agents/skills/`, or `~/.codex/AGENTS.md` directly. Those are generated/symlinked outputs.
 
 All custom skills are prefixed with `msilvis:` (e.g., `/msilvis:my-skill`).
 
@@ -51,7 +54,7 @@ All custom skills are prefixed with `msilvis:` (e.g., `/msilvis:my-skill`).
 
 Reusable skills that should be installable outside this dotfiles repo can live under `plugins/<name>/` with a `.codex-plugin/plugin.json` manifest and a `skills/<name>/SKILL.md` file. Add the plugin to `.agents/plugins/marketplace.json` so another Codex install can add this repo as a plugin marketplace.
 
-If the same skill should remain available through dotfiles-sync, keep the `skills/<name>.md` command skill as a symlink to `plugins/<name>/skills/<name>/SKILL.md`, and keep `skills/<name>/` as a symlink to the plugin skill directory so bundled references still sync into `~/.codex/skills/msilvis-<name>/`.
+If the same skill should remain available through dotfiles-sync, keep `configs/ai/skills/<name>.md` in the dotfiles repo as a symlink to `plugins/<name>/skills/<name>/SKILL.md`, and keep `configs/ai/skills/<name>/` as a symlink to the plugin skill directory so bundled references still sync into `~/.agents/skills/msilvis-<name>/`.
 
 ## Guidelines
 
