@@ -108,6 +108,16 @@ Open the Simulator UI so the user can see it:
 open -a Simulator
 ```
 
+### Authenticated Simulator State
+
+When a user needs to log in or complete an OAuth/device-auth flow manually:
+
+- Use a dedicated simulator when possible, install the app once, launch it, and let the user authenticate before verification.
+- After the user says authentication is complete, preserve that simulator install. Do not run `simctl install`, `simctl uninstall`, erase/reset the simulator, switch devices, or boot a different simulator unless the user explicitly approves.
+- If the app needs to be reopened after auth, use `simctl terminate` followed by `simctl launch`, `simctl openurl`, screenshots, accessibility inspection, logs, and container reads. Reinstalling an app with extensions can rotate app data/app-group containers and can wipe the UserDefaults/app-group state that widgets rely on.
+- If `simctl launch` fails after auth, first inspect SpringBoard/app logs, currently running processes, and the current app/app-group containers. Ask before reinstalling, because reinstalling may force the user to authenticate again and may remove home-screen widget placement.
+- For widget verification after auth, prefer reading the current app-group container reported by `simctl listapps` or `simctl get_app_container ... groups`, plus a home-screen screenshot/accessibility tree. Treat missing app-group metadata after reinstall as simulator install-state damage, not as proof the app failed to write widget data.
+
 ## React Native and Expo
 
 For React Native apps, the simulator control commands are the same, but bring-up is different:
