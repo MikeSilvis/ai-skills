@@ -1,6 +1,6 @@
 ---
 name: pr-test-runner
-description: Run the test plan checklist of a GitHub PR automatically. Parses the `## Test plan` markdown checklist, executes each item via Playwright (browser flows) or Bash (CLI checks), attempts to fix failures by editing source and re-running, flips passing items to `- [x]` in the PR body, commits + pushes any fixes, and posts a summary comment with pass/fixed/fail/skip results. Use when the user says "run the test plan", "verify this PR", "check off the test cases", or invokes `/msilvis:pr-test-runner` explicitly.
+description: Run the test plan checklist of a GitHub PR automatically. Parses the `## Test plan` markdown checklist, executes each item via Playwright (web browser flows), the iOS Simulator (iOS flows, via `xcrun simctl` + `serve-sim`), or Bash (CLI checks), attempts to fix failures by editing source and re-running, flips passing items to `- [x]` in the PR body, commits + pushes any fixes, and posts a summary comment with pass/fixed/fail/skip results. Use when the user says "run the test plan", "verify this PR", "check off the test cases", or invokes `/msilvis:pr-test-runner` explicitly.
 ---
 
 # PR Test Runner
@@ -41,21 +41,41 @@ Find the `## Test plan` or `## Test Plan` section in the body (case-insensitive 
 
 ## Step 3 — Classify each item
 
-For each unchecked item, decide:
+For each unchecked item, decide one of four classifications:
 
-- **Browser flow** — mentions UI elements, navigation, clicks, visual checks, "verify the page shows", "click the button", "the form should", routes/URLs, viewports, mobile/desktop. Use Playwright MCP (`mcp__playwright__browser_*`).
+- **Browser flow** — visual/UI item on a web target. Use Playwright MCP (`mcp__playwright__browser_*`).
+- **iOS flow** — visual/UI item on an iOS target (Apple Simulator). Use `xcrun simctl` for device lifecycle and `npx serve-sim` for interaction (see the `ios-simulator` skill).
 - **CLI / code check** — mentions running tests/lints/builds, file existence, command output, env vars, API responses, scripts. Use Bash.
-- **Ambiguous** — the item is too vague to act on without guessing (e.g. "test it works", "make sure nothing's broken", or it references project knowledge you don't have). **Skip** with reason "ambiguous: <restate item>". Do not invent steps.
+- **Ambiguous** — the item is too vague to act on without guessing, OR it's a visual item on a multi-platform repo with no prefix and no per-repo default declared. **Skip** with reason `ambiguous: <restate item>` or `ambiguous: multi-platform repo, no prefix or default declared`. Do not invent steps.
 
-Load the Playwright tools once up front if any browser flows exist:
+### Platform resolver — browser vs iOS
+
+Visual items resolve to `browser flow` or `ios flow` via this ordered resolver. First rule that matches wins; never fall through to a guess.
+
+1. **Explicit prefix in the item** — `- [ ] (iOS) ...` → `ios flow`; `- [ ] (web) ...` → `browser flow`. The prefix is stripped from displayed text in the summary, but `raw_line` keeps it verbatim for the body rewrite in Step 6.
+2. **Per-repo default** — the PR's repo `CLAUDE.md` may contain an HTML comment `<!-- test-runner: default-platform: ios -->` or `<!-- test-runner: default-platform: web -->`. If present, all unprefixed visual items use that platform.
+3. **Repo layout auto-detect** — scan the repo root for platform signals:
+   - **iOS-capable** signals: `*.xcodeproj`, `*.xcworkspace`, `Project.swift`, `apps/ios/`, `apps/native/ios/`
+   - **Web-capable** signals: `next.config.*`, `vite.config.*`, `apps/web/`, `apps/website/`
+   - Exactly one platform detected → use it.
+   - Both detected (multi-platform repo) and rules 1+2 didn't fire → mark the item `ambiguous` with reason `multi-platform repo, no prefix or default declared`. Do not guess.
+   - Neither detected → assume `browser flow` (historical default; existing single-purpose repos behave unchanged).
+
+CLI checks bypass this resolver entirely.
+
+### Load platform tools up front
+
+Load Playwright tools once if any item resolved to `browser flow`:
 
 ```
 ToolSearch query="select:mcp__playwright__browser_navigate,mcp__playwright__browser_click,mcp__playwright__browser_fill_form,mcp__playwright__browser_snapshot,mcp__playwright__browser_evaluate,mcp__playwright__browser_console_messages,mcp__playwright__browser_resize,mcp__playwright__browser_take_screenshot,mcp__playwright__browser_wait_for,mcp__playwright__browser_close"
 ```
 
-## Step 4 — Dev server (only if a browser flow needs it)
+iOS flows do not require deferred-tool loading — `xcrun simctl` and `npx serve-sim` are invoked via Bash. The setup happens in Step 4b.
 
-Skip this step entirely if every item is a CLI check.
+## Step 4a — Dev server (only if a browser flow needs it)
+
+Skip this step entirely if no item is classified `browser flow`.
 
 Browser items must NEVER be skipped for "port in use" or "wrong server squatting on the port." Either the right server is reachable, or you reclaim the port and start one — those are the only two outcomes.
 
@@ -74,8 +94,43 @@ Browser items must NEVER be skipped for "port in use" or "wrong server squatting
    - **Ours** → curl `http://localhost:<port>` to confirm 2xx/3xx, then proceed.
    - **Squatter** (listener exists but its cwd is not this checkout) → log the squatter's cwd + PID, kill it (`kill <pid>`; if still listening after 3s, `kill -9 <pid>`), then start `mise run dev` from this checkout and poll `http://localhost:<port>` for up to 60s. Do NOT skip browser items because of this — reclaiming the port is part of the job.
    The dev server **must** be started from the PR's checkout directory. Starting it anywhere else (the user's main repo, an unrelated worktree) means you'd be testing main's code instead of the PR's, and a green run wouldn't prove the PR is bug-free.
-4. If the server still isn't reachable on `http://localhost:<port>` after 60s of polling, **fail** every browser item with reason `dev server failed to start: <last error / port owner / curl status>`. Do not mark them `skip` — a non-running dev server in CI/automation is a real failure of this run, not an "out of scope" condition. The only legitimate skip reason tied to the server is when there are zero browser items in the checklist (in which case Step 4 was skipped entirely).
+4. If the server still isn't reachable on `http://localhost:<port>` after 60s of polling, **fail** every browser item with reason `dev server failed to start: <last error / port owner / curl status>`. Do not mark them `skip` — a non-running dev server in CI/automation is a real failure of this run, not an "out of scope" condition. The only legitimate skip reason tied to the server is when there are zero browser items in the checklist (in which case Step 4a was skipped entirely).
 5. **All subsequent navigation uses `http://localhost:<port>` as the base URL** — even if the test plan item or the project's README mentions a proxy hostname like `ghost.local`. Substitute the localhost URL when navigating. Hitting the proxy hostname would route through Caddy to whichever server is "ours" globally — likely the user's main checkout, not this PR's clone — defeating the whole point of running the test plan against the PR's code.
+
+## Step 4b — iOS app build & boot (only if an iOS flow needs it)
+
+Skip this step entirely if no item is classified `ios flow`. Run before any per-item interaction (Step 5) begins. Parallel to Step 4a, with the same contract: this phase must succeed, or every iOS item is `fail`. The work here is heavy (xcodebuild + simulator boot can take 5–8 min on a cold start), so cache the result for Step 5's fix loop.
+
+Reference: most concrete commands below come from the `ios-simulator` skill — consult it for edge cases (e.g. picking a `.app` bundle path when the build uses a non-default `derivedDataPath`).
+
+1. **Look up the PR's repo in `## Per-repo iOS config`** (table at the bottom of this skill). Each row declares: simulator name, scheme, bundle ID, build command (default `mise run build`), optional `generate` command (e.g. `mise run generate` for Tuist), optional URL scheme for deep links, optional `qa:session` script for auth.
+   - If the repo has no row, mark every iOS item `skip` with reason `requires ios config: no iOS row for <repo>` and stop this phase. The skill maintainer must add the row, same pattern as the login table.
+
+2. **Verify host prerequisites** (per the `ios-simulator` skill):
+   - `uname -s` returns `Darwin`
+   - `xcrun --version` works
+   - `node --version` ≥ 18
+   - If any check fails, fail every iOS item with `ios host prereq missing: <which one>`. Do not retry.
+
+3. **Boot the simulator.** Check `xcrun simctl list devices booted`:
+   - Configured device already booted → reuse it.
+   - Not booted → `xcrun simctl boot "<device name>"` then `xcrun simctl bootstatus booted -b`.
+   - If boot fails after 60s, fail every iOS item with `ios simulator boot failed: <last error>`.
+
+4. **Generate the project** if the config declares a `generate` command and the workspace/project doesn't exist yet. Skip if already generated. On failure, fail every iOS item with `ios generate failed: <last 10 lines>`.
+
+5. **Build from the PR's checkout directory** (same isolation rule as the web dev server — must build from this worktree, not the user's main checkout). Run the configured build command. Parse for `BUILD SUCCEEDED` / `BUILD FAILED`. On failure, fail every iOS item with `ios build failed: <last 10 lines>`. Do not attempt build fixes in this phase; the per-item fix loop in Step 5 is the only place edits are allowed, and only for items whose initial run got past build.
+
+6. **Install + launch.** Resolve the built `.app` path (typically `build/Build/Products/Debug-iphonesimulator/<AppName>.app`; consult the `ios-simulator` skill for alternate `derivedDataPath` layouts), then:
+   ```
+   xcrun simctl install booted <path-to-.app>
+   xcrun simctl launch booted <bundle-id>
+   ```
+   Start `npx serve-sim --detach -q` if not already running, then confirm the app reaches foreground via `curl http://localhost:3100/ax`. If the app doesn't reach foreground within 30s, fail every iOS item with `ios app failed to launch: <last error or last ax snapshot>`.
+
+7. **Cache the build state.** Record `git rev-parse HEAD` as `ios_build_sha` and the `.app` path as `ios_app_path`. The per-item fix loop in Step 5 uses these to decide when to rebuild — see "Re-run only that item" for iOS in Step 5.
+
+Failures in this phase are recorded as `fail` on every iOS item, never `skip` — a broken simulator setup in CI/automation is a real failure of this run, not an "out of scope" condition.
 
 ## Step 5 — Run each test case
 
@@ -93,6 +148,22 @@ For each item:
 4. Verify the expected outcome via `browser_snapshot`, `browser_evaluate`, or `browser_console_messages`.
 5. Record `pass` / `fail` with a one-line reason. On failure, capture a screenshot via `browser_take_screenshot` and include the path in the reason.
 6. Always check `browser_console_messages` after navigation — JS errors fail the case even if the visible flow worked.
+
+### iOS flows
+
+For each item classified `ios flow`:
+
+1. **Re-baseline the UI** — bring the app to the screen the item targets:
+   - If the per-repo iOS config declares a URL scheme and the item names a route/screen, prefer `xcrun simctl openurl booted <scheme>://<path>` for deep-linking. Fast and unambiguous.
+   - Otherwise, start from the app's current state and navigate via `serve-sim` taps/swipes. Capture an accessibility snapshot first (`curl http://localhost:3100/ax`) and pick affordances from it rather than guessing coordinates.
+2. **Perform the actions** described in the item — taps, swipes, fills, scrolls, hardware buttons, rotation — via `serve-sim`. See the `ios-simulator` skill for the exact endpoints.
+3. **Verify the expected outcome**:
+   - State checks: accessibility snapshot (`curl http://localhost:3100/ax`).
+   - Visual checks: screenshot (`xcrun simctl io booted screenshot <path>`).
+   - Crash/runtime errors: scrape recent device logs with `xcrun simctl spawn booted log show --last 60s --predicate 'process == "<AppName>"'`. A Swift runtime error in the log fails the case even if the visible flow worked, mirroring the browser-flow rule about JS console errors.
+4. **Record `pass` / `fail`** with a one-line reason. On failure, attach the screenshot path and the last 30 lines of relevant device logs.
+
+**Auth on iOS:** unlike browser flows, OAuth in the iOS app can't be automated headlessly. If the per-repo iOS config declares a `qa:session` script (parallel to ghost's web pattern), run it and follow its documented session-injection step. Otherwise, when the app lands on a login screen, mark the item `skip` with reason `requires auth: ios oauth not automatable — log in once via the simulator, then re-run`. Do not attempt to drive the OAuth UI via `serve-sim`.
 
 ### CLI / code checks
 
@@ -112,6 +183,10 @@ Never use skip for:
 - Missing seed data, wrong DB pointed at, env not loaded — diagnose, fix the local env, and re-run; if still impossible, mark `fail` with the specific local-env reason so the summary's "local infra" banner can surface it.
 
 ### Auth redirect → log in and retry (do NOT skip on first redirect)
+
+**Applies to browser flows only.** iOS auth is handled inline in the "iOS flows"
+section above with a different mechanism (optional `qa:session` script per
+repo; otherwise skip with the iOS-specific reason).
 
 A test plan item is only allowed to skip with `requires auth` if you actually
 attempted login per the [Per-repo login config](#per-repo-login-config) and
@@ -168,6 +243,7 @@ When an item fails, try to fix the underlying issue, not the test. Skipped items
 
 1. **Diagnose** from the failure signal:
    - Browser flow: console errors, network 4xx/5xx, the snapshot diff vs expected, the failing assertion.
+   - iOS flow: device logs (last 60s, filtered by app process via `xcrun simctl spawn booted log show`), accessibility snapshot diff vs expected, the screenshot, the failing assertion.
    - CLI check: stderr, exit code, the specific assertion that missed.
 2. **Locate the cause.** Read the relevant source files (use grep/Read on the PR's diff first — the regression is far more likely in code the PR just changed than elsewhere). Don't speculatively rewrite unrelated code.
 3. **Decide whether the fix is in scope.** Only attempt a fix if **all** of these hold:
@@ -175,7 +251,7 @@ When an item fails, try to fix the underlying issue, not the test. Skipped items
    - The fix is small and local — a few lines, one or two files. Anything that looks like a refactor, an architectural change, or a new feature is out of scope: mark `fail — fix out of scope: <reason>` and move on.
    - The fix doesn't require modifying tests, CI config, or anything that would weaken the test plan itself. **Never** edit the test plan item, comment out assertions, add `--no-verify`, lower a threshold, or hardcode a value to make the check pass.
 4. **Apply the fix** with Edit/Write. Keep the diff minimal.
-5. **Re-run only that item.** Same classification, same flow.
+5. **Re-run only that item.** Same classification, same flow. For `ios flow`: rebuild first (the configured build command from the per-repo iOS config), reinstall (`xcrun simctl install booted <path>`), and relaunch (`xcrun simctl launch booted <bundle-id>`) before the new attempt. Do *not* re-boot the simulator or re-generate the project — the Step 4b caches stay warm. Track rebuild time against the runtime cap.
 6. **Verify it passes.** If yes:
    - Commit with: `fix: <one-line summary> (test plan: <truncated item>)` — no body, no co-author trailer (the bot wrapper adds attribution).
    - `git push` to the PR branch.
@@ -273,7 +349,7 @@ counts. If no banner triggers fire, omit the block entirely.
 - Never bypass safety checks to make a fix land: no `--no-verify`, no `--force`, no editing CI/lint config to silence a check, no commenting out assertions or tests. If a pre-commit hook fails, fix the underlying issue or abandon the fix attempt.
 - If the working tree is dirty before the run, stop in step 1. Don't stash or discard.
 - If the PR body has been edited concurrently while you were running, your `gh pr edit` will overwrite their changes. Before writing, re-fetch the body and confirm the test plan section still matches the version you parsed; if it doesn't, abort the body update and tell the user the body changed under you (the comment + commits still post).
-- Cap total runtime at 15 minutes. If a single browser flow hangs >2 min, kill it and mark `fail — timeout`.
+- Cap total runtime at **15 minutes** for runs with no iOS items, **30 minutes** if any item is classified `ios flow` (cold-start xcodebuild + simulator boot can take 5–8 min before any item runs). If a single browser flow hangs >2 min, kill it and mark `fail — timeout`. For iOS, kill any single interaction step that exceeds 3 min and mark `fail — timeout`.
 - If `gh` isn't authenticated, stop immediately and tell the user to run `gh auth login`.
 
 ## Per-repo login config
@@ -380,3 +456,62 @@ existing OAuthToken row in the dev DB.
   2. Fill the email + password inputs from the env vars.
   3. Click the primary submit button.
   4. Wait for redirect away from `/login`; fail if still there after 5s.
+
+## Per-repo iOS config
+
+Used by Step 4b and the `ios flow` execution in Step 5. Each row documents how
+to build, install, and interact with one repo's iOS app on the Apple Simulator.
+If a repo isn't listed here, iOS-classified items will skip with
+`requires ios config: no iOS row for <repo>` until a row is added — same
+pattern as the login table above.
+
+A row may declare an optional **URL scheme** for deep-linking and an optional
+**`qa:session` script** for auth-gated screens. iOS OAuth flows are not
+automated via the simulator UI — if a screen needs login and the row has no
+`qa:session`, the item skips with the iOS-specific reason from the "iOS flows"
+section in Step 5.
+
+### MikeSilvis/lumina
+
+- **Simulator:** `iPhone 16 Pro` (override via the repo's mise tasks if it
+  declares a preferred device)
+- **Scheme:** `Lumina`
+- **Bundle ID:** read from `apps/ios/Project.swift` or the generated
+  `Info.plist` (`com.silvis.Lumina` as of the last check; verify before the
+  first run)
+- **Generate command:** `mise run generate` (Tuist project generation;
+  required on a fresh checkout or after `Project.swift` changes)
+- **Build command:** `mise run build`
+- **`.app` path:** `build/Build/Products/Debug-iphonesimulator/Lumina.app`
+  (default `derivedDataPath` from the mise task — if the task overrides it,
+  parse the override from the task definition)
+- **URL scheme:** not yet declared — omit deep-link step; navigate from launch
+  state until the repo's `CLAUDE.md` lists one.
+- **`qa:session` script:** none. Auth-gated items skip with the iOS auth reason.
+- **Maintainer note:** lumina is iOS-only at the iOS-build level (the repo also
+  has `apps/server/`, but the server is a Node backend, not a web UI). No
+  per-repo `default-platform` comment is needed today; visual items resolve to
+  iOS via the layout auto-detect.
+
+### MikeSilvis/Siltop-Visions (React Native)
+
+- **Simulator:** `iPhone 16 Pro` (RN bridges through `xcodebuild`, same as
+  native Swift; pick the device the project's `apps/native/ios/` scripts
+  expect)
+- **Scheme:** `SiltopVisions`
+- **Bundle ID:** verify from `apps/native/ios/SiltopVisions.xcodeproj` before
+  the first run
+- **Generate command:** none (xcodeproj is checked in)
+- **Build command:** the repo's documented iOS build task (look in
+  `apps/native/package.json` scripts or `mise.toml`); fall back to
+  `xcodebuild` from `apps/native/ios/` with the standard simulator destination
+  if no task is defined
+- **`.app` path:** parse from the build output (`xcodebuild -showBuildSettings`
+  reports `BUILT_PRODUCTS_DIR` and `WRAPPER_NAME`)
+- **URL scheme:** not yet declared
+- **`qa:session` script:** none; Siltop's email/password seed user works on
+  *web*, not the RN app — RN auth still skips with the iOS auth reason
+- **Maintainer note:** Siltop-Visions is multi-platform (`apps/web/` + `apps/
+  native/`). Add the per-repo default-platform comment to its `CLAUDE.md` once
+  the team decides which surface PRs target by default; until then, items
+  without `(iOS)` / `(web)` prefixes resolve to `ambiguous`.
