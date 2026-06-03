@@ -74,7 +74,11 @@ If `pnpm run build` fails outright, stop the frontend leg and surface the error 
 
 **Preferred (PostHog MCP loaded):** use the PostHog MCP's HogQL/query tool with this query intent:
 
-> Pull the last `<web_vitals.window_days>` days of PostHog events where `event = <web_vitals.event_name>` and the service/project property equals `<posthog_service>` when that property exists. Group by `properties.<web_vitals.path_field>` and the metric name. For each (path, metric) pair return p75 of `properties.value`. Return as a JSON array, one row per (path, metric).
+> Pull the last `<web_vitals.window_days>` days of PostHog events where `event = <web_vitals.event_name>` and the service/project property equals `<posthog_service>` when that property exists. Group by `properties.<web_vitals.path_field>`.
+>
+> If `web_vitals.metric_value_fields` is configured, treat it as the native PostHog Web Vitals shape: for each configured metric key (for example `LCP`) compute p75 of that metric's property field (for example `properties.$web_vitals_LCP_value`) and return one row per (path, metric). If `metric_value_fields` is not configured, use the legacy one-row-per-metric shape: group by `properties.<web_vitals.metric_field || "metric">` and return p75 of `properties.<web_vitals.value_field || "value">`.
+>
+> Return a JSON array, one row per (path, metric), with at least `path`, `metric`, and `p75`.
 
 **Fallback (PostHog MCP unavailable, `dev.fallback` configured):** drive a local Playwright sweep against the running dev server.
 
@@ -263,7 +267,7 @@ The `.claude/perf.json` contract this skill consumes:
   "posthog_service": "<service or project property in PostHog>", // used for browser RUM/web-vitals event filters
   "posthog_backend_service": "<service name>-server", // optional; used for backend event filters. Defaults to posthog_service.
   "branch_prefix": "perf",                  // worktrees become <branch_prefix>/<slug>
-  "skip_paths": ["/healthz", "/api/v1/log-web-vitals"],
+  "skip_paths": ["/healthz"],
   "web": {                                  // required if app_type includes frontend
     "workspace_filter": "web",
     "build_command": "pnpm --filter web build",
@@ -272,8 +276,16 @@ The `.claude/perf.json` contract this skill consumes:
     "routes_root": "web/app"
   },
   "web_vitals": {                           // required if app_type includes frontend
-    "event_name": "web-vital",
-    "path_field": "path",
+    "event_name": "$web_vitals",
+    "path_field": "$pathname",
+    "metric_value_fields": {                // native PostHog browser SDK shape
+      "LCP": "$web_vitals_LCP_value",
+      "INP": "$web_vitals_INP_value",
+      "CLS": "$web_vitals_CLS_value",
+      "FCP": "$web_vitals_FCP_value"
+    },
+    "metric_field": "metric",               // optional legacy shape fallback when metric_value_fields is absent
+    "value_field": "value",                 // optional legacy shape fallback when metric_value_fields is absent
     "window_days": 7,
     "p75_lcp_ms_budget": 2500,
     "p75_inp_ms_budget": 200,
