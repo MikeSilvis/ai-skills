@@ -1,6 +1,6 @@
 ---
 name: perf-audit
-description: On-demand performance audit for a Next.js + SigNoz app. Gathers slow routes from bundle sizes, Web Vitals RUM, and backend traces, then fans out parallel subagents — one per finding, each in its own worktree — that open PRs against the worst offenders. Repo-agnostic; reads `.claude/perf.json` from the current repo for thresholds and signal sources. Stops at "ready for review"; never auto-merges. Use when the user says "run a perf audit", "audit performance", "find slow routes", or invokes `/msilvis:perf-audit`.
+description: On-demand performance audit for a Next.js + PostHog app. Gathers slow routes from bundle sizes, Web Vitals RUM, and backend events/errors, then fans out parallel subagents — one per finding, each in its own worktree — that open PRs against the worst offenders. Repo-agnostic; reads `.claude/perf.json` from the current repo for thresholds and signal sources. Stops at "ready for review"; never auto-merges. Use when the user says "run a perf audit", "audit performance", "find slow routes", or invokes `/msilvis:perf-audit`.
 ---
 
 # Perf Audit — Gather, Fan Out, Open PRs
@@ -22,19 +22,19 @@ This skill is repo-agnostic. All repo-specific knobs live in `.claude/perf.json`
 
 1. Read `.claude/perf.json` from the current working directory. If it does not exist, stop and tell the user:
 
-   > This repo has no `.claude/perf.json`. The perf-audit skill needs that file to know which workspace to build, which SigNoz service to query, and what budgets to enforce. Want me to scaffold one?
+   > This repo has no `.claude/perf.json`. The perf-audit skill needs that file to know which workspace to build, which PostHog service to query, and what budgets to enforce. Want me to scaffold one?
 
    Do not proceed without the contract; do not guess values.
 
-2. Validate the required keys before touching anything: `app_type`, `signoz_service`, `branch_prefix`. If `app_type` includes `frontend`, also require the `web` and `web_vitals` blocks. If it includes `backend`, also require the `backend` block.
+2. Validate the required keys before touching anything: `app_type`, `posthog_service`, `branch_prefix`. If `app_type` includes `frontend`, also require the `web` and `web_vitals` blocks. If it includes `backend`, also require the `backend` block.
 
-3. **Probe for SigNoz MCP.** The Web Vitals and backend p95 legs depend on `mcp__Signoz__*` tools. Check whether they are loaded in this session (use `ToolSearch` with `select:mcp__Signoz__signoz_list_services` or similar). If they are NOT loaded:
+3. **Probe for PostHog MCP.** The Web Vitals and backend p95 legs depend on `mcp__PostHog__*` tools. Check whether they are loaded in this session (use `ToolSearch` for PostHog/HogQL query tools). If they are NOT loaded:
 
-   - Tell the user in one line: "SigNoz MCP not loaded in this session — Web Vitals + backend p95 legs will fall back to the local-dev data path (`dev.fallback` block in `.claude/perf.json`). Restart Claude Code to pick up the SigNoz MCP for a real prod-data run."
+   - Tell the user in one line: "PostHog MCP not loaded in this session — Web Vitals + backend p95 legs will fall back to the local-dev data path (`dev.fallback` block in `.claude/perf.json`). Restart Claude Code to pick up the PostHog MCP for a real prod-data run."
    - If `dev.fallback` is **not** configured in the contract, skip the affected legs entirely and tell the user which findings won't appear this run. Do not abort the whole skill — frontend bundle still runs.
    - If `dev.fallback` **is** configured, proceed using the fallback path described in Phases 1b–1c.
 
-4. Echo a one-line plan back to the user: scope, top N, app_type, signoz_service, signal sources (`signoz` vs `dev-fallback`). Then continue (no confirmation prompt — the skill is on-demand and the user just invoked it).
+4. Echo a one-line plan back to the user: scope, top N, app_type, posthog_service, signal sources (`posthog` vs `dev-fallback`). Then continue (no confirmation prompt — the skill is on-demand and the user just invoked it).
 
 ## Phase 1 — Gather (sequential, in the orchestrator)
 
@@ -72,18 +72,18 @@ If `pnpm run build` fails outright, stop the frontend leg and surface the error 
 
 ### 1b. Frontend Real-User Web Vitals (scope: frontend, both)
 
-**Preferred (SigNoz MCP loaded):** invoke the `msilvis:signoz-logs` skill as a subtask with this query intent:
+**Preferred (PostHog MCP loaded):** use the PostHog MCP's HogQL/query tool with this query intent:
 
-> Pull the last `<web_vitals.window_days>` days of logs from service `<signoz_service>` where the event name equals `<web_vitals.event_name>`. Group by the `<web_vitals.path_field>` field and the metric name. For each (path, metric) pair return p75 of `value`. Return as a JSON array, one row per (path, metric).
+> Pull the last `<web_vitals.window_days>` days of PostHog events where `event = <web_vitals.event_name>` and the service/project property equals `<posthog_service>` when that property exists. Group by `properties.<web_vitals.path_field>` and the metric name. For each (path, metric) pair return p75 of `properties.value`. Return as a JSON array, one row per (path, metric).
 
-**Fallback (SigNoz MCP unavailable, `dev.fallback` configured):** drive a local Playwright sweep against the running dev server.
+**Fallback (PostHog MCP unavailable, `dev.fallback` configured):** drive a local Playwright sweep against the running dev server.
 
 1. Confirm the dev server is up at `dev.fallback.base_url`. If not, surface to the user and stop the leg — do not start `pnpm run dev` yourself (it has side effects on Postgres, manifest cache, etc.).
 2. If the contract specifies `dev.fallback.qa_session_command`, run it once to mint a session and capture the auth URL.
 3. Use the `mcp__playwright__*` tools to navigate to each route in `dev.fallback.routes` (or auto-derive from `routes-manifest.json` if not listed). For each route, hit it **twice** (cold then warm) and capture via `performance.getEntriesByType('navigation')[0]`: `responseStart` (TTFB), `paint.first-contentful-paint`, and the last `largest-contentful-paint` entry.
 4. Report **warm** numbers. The cold hit primes the Next dev compile cache; the warm hit is the real server cost. Caveat the user that dev-mode numbers are indicative not absolute — they're useful for finding outliers among siblings, not for matching prod budgets exactly.
 
-For each row, compare p75 (SigNoz) or warm value (fallback) against the matching budget:
+For each row, compare p75 (PostHog) or warm value (fallback) against the matching budget:
 - `LCP` → `web_vitals.p75_lcp_ms_budget`
 - `INP` → `web_vitals.p75_inp_ms_budget` (fallback path: INP isn't measurable from a scripted Playwright nav — skip it under fallback)
 - `CLS` → `web_vitals.p75_cls_budget` (skip if not configured — CLS isn't always budgeted)
@@ -96,18 +96,18 @@ route_or_target: <path>
 current: "p75 LCP <a>ms, p75 INP <b>ms"  // or "warm TTFB <a>ms, FCP <b>ms (dev-fallback)"
 budget: "LCP <x>ms, INP <y>ms"
 suspected_files: <files under web.routes_root that map to this route>
-evidence: <raw rows from the SigNoz response OR Playwright timing JSON>
+evidence: <raw rows from the PostHog response OR Playwright timing JSON>
 ```
 
-### 1c. Backend latency + DB spans (scope: backend, both)
+### 1c. Backend latency + server events (scope: backend, both)
 
-**Preferred (SigNoz MCP loaded):** invoke `msilvis:signoz-logs` twice. Use `<signoz_trace_service>` (which defaults to `<signoz_service>` if the contract doesn't set it separately) — backends commonly emit traces under a `-server` suffixed service while browser RUM logs use the bare name, and the two must be distinguished.
+**Preferred (PostHog MCP loaded):** use the PostHog MCP's HogQL/query tool against captured backend events. Use `<posthog_backend_service>` (which defaults to `<posthog_service>` if the contract doesn't set it separately) when filtering service/project properties.
 
-1. **Slow API routes.** Query traces for service `<signoz_trace_service>` over the last `<web_vitals.window_days>` days. For each `http.route` (or `http.target`) return p95 duration. Compare to `backend.slow_route_p95_ms_budget`. If neither attribute is present on any span, the backend isn't HTTP-instrumented yet — surface that to the user as a single line and skip this sub-leg (do not fabricate a finding).
+1. **Slow API routes.** Query backend request events over the last `<web_vitals.window_days>` days. Use `backend.route_event_name` when configured, otherwise try common event names like `api.request`, `request`, and `web-vital` only if they carry a route/path plus duration property. Group by `backend.route_field` (default `route`, fallback `path`) and return p95 of `backend.duration_field` (default `durationMs`). Compare to `backend.slow_route_p95_ms_budget`. If no matching events exist, surface that to the user and skip this sub-leg.
 
-2. **Slow DB spans.** Query traces for the same service+window, filter `db.system` present (Prisma / Postgres / etc.). Group by `db.statement` or operation name, return p95 duration. Compare to `backend.slow_db_span_p95_ms_budget`. Same rule: if no `db.system` spans exist, surface and skip.
+2. **Server errors / warnings.** Query PostHog error tracking or captured backend `$exception`/warning events for the same service+window. Record recurring error groups as `kind: "warning"` when the backend budget has `max_error_occurrences: 0` or another explicit error budget. Do not fabricate DB-span findings unless the app emits dedicated DB timing events.
 
-**Fallback (SigNoz MCP unavailable, `dev.fallback` configured):** parse the running dev server's log.
+**Fallback (PostHog MCP unavailable, `dev.fallback` configured):** parse the running dev server's log.
 
 1. Read `dev.fallback.log_path` (or default `logs/app.log`, or the dev process's tee'd stdout if the contract specifies `dev.fallback.log_command`). Tail the last 5 minutes, or the entire file if the dev server was just started.
 2. Extract every line matching Next's request log format: `GET|POST <path> <status> in <total>ms (next.js: <a>ms, [middleware/proxy: <b>ms,] application-code: <c>ms)`. The middleware/proxy segment is optional and named after whatever middleware the repo runs. The `application-code` value is the pure handler time — that's what to budget against.
@@ -118,15 +118,15 @@ evidence: <raw rows from the SigNoz response OR Playwright timing JSON>
 Record one finding per overage:
 
 ```
-kind: "api-latency" | "db-span" | "warning"
-route_or_target: <route path | db operation | warning key>
+kind: "api-latency" | "warning"
+route_or_target: <route path | warning key>
 current: "p95 <n>ms"  // or "<n> occurrences"
 budget: "p95 <m>ms"   // or "zero"
 suspected_files: <best-effort grep — route file for api-latency, query call sites for db-span>
-evidence: <SigNoz rows OR matching log lines>
+evidence: <PostHog rows OR matching log lines>
 ```
 
-For db-span findings, do a quick `grep -rn` in `src/` and `web/app/` for distinctive tokens from the SQL or the operation name. If you can't pin it to ≤5 files, leave `suspected_files: []` and let the subagent search.
+For warning findings, do a quick `grep -rn` in `src/` and `web/app/` for distinctive tokens from the message or stack trace. If you can't pin it to ≤5 files, leave `suspected_files: []` and let the subagent search.
 
 ### 1d. Rank, dedupe, cap
 
@@ -146,7 +146,7 @@ Found <N> performance issues. Spawning <N> subagents in parallel:
 
   1. [bundle]       /inventory             243 kB → 200 kB
   2. [web-vitals]   /loadouts              p75 LCP 3.1s → 2.5s
-  3. [db-span]      itemDefs.findMany      p95 480ms → 300ms
+  3. [warning]      /api/items             12 recurring errors → 0
 ```
 
 If `--dry-run`, stop here.
@@ -214,7 +214,7 @@ Your first action is `EnterWorktree` with name `<branch_prefix>/<slug>`. After t
 
    ## Test plan
    - [ ] <verifiable check #1 — e.g. "build /inventory and confirm First Load JS < 200 kB">
-   - [ ] <verifiable check #2 — e.g. "open /loadouts in prod after deploy, watch SigNoz p75 LCP for 24h">
+   - [ ] <verifiable check #2 — e.g. "open /loadouts in prod after deploy, watch PostHog p75 LCP for 24h">
    - [ ] <verifiable check #3 — e.g. "run `pnpm run test:unit` and confirm green">
 
 7. On the **last two lines** of your reply, print exactly these markers and nothing after:
@@ -260,8 +260,8 @@ The `.claude/perf.json` contract this skill consumes:
 ```jsonc
 {
   "app_type": "frontend" | "backend" | "frontend+backend",
-  "signoz_service": "<service name in SigNoz>",     // used for log queries (browser RUM, web-vitals)
-  "signoz_trace_service": "<service name>-server",  // optional; used for trace queries (api-latency, db-span). Defaults to signoz_service. Set this when the Node OTel SDK emits traces under a different service.name than the browser logger.
+  "posthog_service": "<service or project property in PostHog>", // used for browser RUM/web-vitals event filters
+  "posthog_backend_service": "<service name>-server", // optional; used for backend event filters. Defaults to posthog_service.
   "branch_prefix": "perf",                  // worktrees become <branch_prefix>/<slug>
   "skip_paths": ["/healthz", "/api/v1/log-web-vitals"],
   "web": {                                  // required if app_type includes frontend
@@ -281,9 +281,12 @@ The `.claude/perf.json` contract this skill consumes:
   },
   "backend": {                              // required if app_type includes backend
     "slow_route_p95_ms_budget": 800,
-    "slow_db_span_p95_ms_budget": 300
+    "route_event_name": "api.request",      // optional; defaults to common request event names
+    "route_field": "route",                 // optional; falls back to path
+    "duration_field": "durationMs",         // optional
+    "max_error_occurrences": 0              // optional; enables recurring-error findings
   },
-  "dev": {                                  // optional — enables local-dev fallback when SigNoz MCP isn't loaded
+  "dev": {                                  // optional — enables local-dev fallback when PostHog MCP isn't loaded
     "fallback": {
       "base_url": "https://<host>.local",   // running dev server
       "qa_session_command": "pnpm run qa:session", // optional — mints an auth session for Playwright

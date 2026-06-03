@@ -75,7 +75,7 @@ curl -fsSL "https://raw.githubusercontent.com/MikeSilvis/ai-skills/main/plugins/
 | Skill | Use when you want to… |
 | --- | --- |
 | `circleci-failing-builds` | Investigate and fix broken CircleCI jobs. |
-| `perf-audit` | Find slow Next.js routes using bundle size, Web Vitals, and SigNoz signals. |
+| `perf-audit` | Find slow Next.js routes using bundle size, Web Vitals, and PostHog signals. |
 | `coolify` | Drive a Coolify dashboard via Playwright (deploys, status, logs, settings). |
 | `coolify-disk-cleanup` | Free disk space on a Coolify server through its web terminal. |
 | `android-emulator` | Build, run, view, and drive Android apps on an emulator or device. |
@@ -99,7 +99,7 @@ Most skills are plain instructions, but some lean on outside tools:
 
 - **GitHub / PR skills** — expect `gh` CLI installed and logged in.
 - **`qa-run`, `coolify`, `site-modernize`** — drive a browser via Playwright.
-- **`perf-audit`** — expects SigNoz signal access when backend traces are in scope.
+- **`perf-audit`** — expects PostHog signal access when backend events are in scope.
 - **`android-emulator`** — requires Android SDK platform tools (`adb`) and, for
   emulator startup, the Android emulator binary plus at least one AVD.
 - **`ios-simulator`** — requires Xcode and a usable simulator runtime. It uses
