@@ -1,7 +1,7 @@
 {
   "name": "perf-audit",
   "version": "0.1.0",
-  "description": "On-demand performance audit for a Next.js + SigNoz app.",
+  "description": "On-demand performance audit for a Next.js + PostHog app.",
   "author": {
     "name": "Mike Silvis",
     "url": "https://github.com/MikeSilvis"
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Perf Audit",
-    "shortDescription": "On-demand performance audit for a Next.js + SigNoz app. Gathers slow routes from bundle sizes, Web Vitals RUM, and backend traces, then fans",
-    "longDescription": "On-demand performance audit for a Next.js + SigNoz app. Gathers slow routes from bundle sizes, Web Vitals RUM, and backend traces, then fans out parallel subagents — one per finding, each in its own worktree — that open PRs against the worst offenders. Repo-agnostic; reads `.claude/perf.json` from the current repo for thresholds and signal sources. Stops at \"ready for review\"; never auto-merges. Use when the user says \"run a perf audit\", \"audit performance\", \"find slow routes\", or invokes `/msilvis:perf-audit`.",
+    "shortDescription": "On-demand performance audit for a Next.js + PostHog app. Gathers slow routes from bundle sizes, Web Vitals RUM, and backend events/errors, then fans",
+    "longDescription": "On-demand performance audit for a Next.js + PostHog app. Gathers slow routes from bundle sizes, Web Vitals RUM, and backend events/errors, then fans out parallel subagents — one per finding, each in its own worktree — that open PRs against the worst offenders. Repo-agnostic; reads `.claude/perf.json` from the current repo for thresholds and signal sources. Stops at \"ready for review\"; never auto-merges. Use when the user says \"run a perf audit\", \"audit performance\", \"find slow routes\", or invokes `/msilvis:perf-audit`.",
     "developerName": "Mike Silvis",
     "category": "Engineering",
     "capabilities": [
