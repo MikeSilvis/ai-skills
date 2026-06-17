@@ -77,25 +77,22 @@ iOS flows do not require deferred-tool loading — `xcrun simctl` and `npx serve
 
 Skip this step entirely if no item is classified `browser flow`.
 
-Browser items must NEVER be skipped for "port in use" or "wrong server squatting on the port." Either the right server is reachable, or you reclaim the port and start one — those are the only two outcomes.
+Browser items must NEVER be skipped for "port in use." This run gets its **own** dev server on its **own** port — it never reuses, fights for, or kills anything on the project's canonical port. The machine routinely runs several dev servers at once (the user's main checkout on the canonical port, the proxy that points at it, parallel pipeline workers); each must stay isolated. **Never kill a process you don't own to free a port.**
 
-1. Detect the *port* the project's dev server expects. Look in this order:
-   - `CLAUDE.md` / `README.md` for a documented dev port
-   - `Caddyfile` / `docker-compose.yml` (extract the upstream `reverse_proxy localhost:<port>` target — ignore the public hostname)
-   - `package.json` scripts (e.g. `next dev -p 3001`)
-   - Fall back to `3000`
-   Capture only the port. **Do not** use a proxy hostname (`*.local`, `*.test`, `*.localhost`, etc.) as the test URL — proxies like Caddy are global state shared with the user's main checkout, and they won't route to this PR's clone (which lives under `/tmp` or `.claude/worktrees/`). The test URL is `http://localhost:<port>` for the entire run.
-2. Check whether the port is held by a process from THIS checkout:
-   - `lsof -nP -iTCP:<port> -sTCP:LISTEN -F pn` to get the PID(s) listening.
-   - For each PID, resolve its working dir: `lsof -a -p <pid> -d cwd -F n` → the `n` line is the cwd.
-   - The port "belongs to us" iff at least one listener's cwd equals — or is a subdirectory of — the current repo checkout (`git rev-parse --show-toplevel`).
-3. Decide:
-   - **Nothing listening** → `cd $(git rev-parse --show-toplevel)` and start `mise run dev` in the background, poll `http://localhost:<port>` for up to 60s.
-   - **Ours** → curl `http://localhost:<port>` to confirm 2xx/3xx, then proceed.
-   - **Squatter** (listener exists but its cwd is not this checkout) → log the squatter's cwd + PID, kill it (`kill <pid>`; if still listening after 3s, `kill -9 <pid>`), then start `mise run dev` from this checkout and poll `http://localhost:<port>` for up to 60s. Do NOT skip browser items because of this — reclaiming the port is part of the job.
-   The dev server **must** be started from the PR's checkout directory. Starting it anywhere else (the user's main repo, an unrelated worktree) means you'd be testing main's code instead of the PR's, and a green run wouldn't prove the PR is bug-free.
-4. If the server still isn't reachable on `http://localhost:<port>` after 60s of polling, **fail** every browser item with reason `dev server failed to start: <last error / port owner / curl status>`. Do not mark them `skip` — a non-running dev server in CI/automation is a real failure of this run, not an "out of scope" condition. The only legitimate skip reason tied to the server is when there are zero browser items in the checklist (in which case Step 4a was skipped entirely).
-5. **All subsequent navigation uses `http://localhost:<port>` as the base URL** — even if the test plan item or the project's README mentions a proxy hostname like `ghost.local`. Substitute the localhost URL when navigating. Hitting the proxy hostname would route through Caddy to whichever server is "ours" globally — likely the user's main checkout, not this PR's clone — defeating the whole point of running the test plan against the PR's code.
+1. **Allocate an isolated, free port for this run.** Do not reuse the project's canonical dev port (3000, whatever the Caddyfile/README says) — that's shared global state the user's checkout and the proxy depend on. Grab an ephemeral free port instead:
+   ```bash
+   DEV_PORT=$(node -e 'const s=require("net").createServer();s.listen(0,"127.0.0.1",()=>{const p=s.address().port;s.close(()=>console.log(p))})')
+   ```
+   If you already started this run's dev server in an earlier step, reuse the `DEV_PORT` you recorded — don't start a second one. **Do not** navigate via a proxy hostname (`*.local`, `*.test`, `*.localhost`, etc.) — proxies like Caddy point at the user's main checkout, not this PR's clone. The test URL is `http://localhost:$DEV_PORT` for the entire run.
+2. **Start the dev server from the PR's checkout, bound to that port:**
+   ```bash
+   cd "$(git rev-parse --show-toplevel)"
+   PORT="$DEV_PORT" mise run dev > /tmp/pr-test-dev-$DEV_PORT.log 2>&1 &
+   ```
+   The dev server **must** be started from the PR's checkout directory. Starting it anywhere else (the user's main repo, an unrelated worktree) means you'd be testing main's code instead of the PR's, and a green run wouldn't prove the PR is bug-free. The contract is that the project's dev script honors `$PORT` — standard Next/Vite dev servers do, and ghost's `scripts/dev.sh` does as of the port-isolation fix. If a repo's dev script ignores `$PORT` and hardcodes its own, it must be taught to honor `$PORT` (flag it to the maintainer) — never fall back to killing the canonical port.
+3. **Poll `http://localhost:$DEV_PORT` for up to 60s** until it returns 2xx/3xx, then record `$DEV_PORT` for the rest of the run. If the chosen port loses a race and is taken before the server binds, pick another free port (back to step 1) and retry once.
+4. If the server still isn't reachable on `http://localhost:$DEV_PORT` after 60s of polling, **fail** every browser item with reason `dev server failed to start: <last error / curl status>` (include the tail of the log file). Do not mark them `skip` — a non-running dev server in CI/automation is a real failure of this run, not an "out of scope" condition. The only legitimate skip reason tied to the server is when there are zero browser items in the checklist (in which case Step 4a was skipped entirely).
+5. **All subsequent navigation uses `http://localhost:$DEV_PORT` as the base URL** — even if the test plan item or the project's README mentions a proxy hostname like `ghost.local`. Substitute the localhost URL when navigating. Hitting the proxy hostname would route through Caddy to whichever server is "ours" globally — likely the user's main checkout, not this PR's clone — defeating the whole point of running the test plan against the PR's code.
 
 ## Step 4b — iOS app build & boot (only if an iOS flow needs it)
 
@@ -178,7 +175,7 @@ Skips should be rare. Push hard to convert would-be skips into pass / fail / fix
 - `manual verification` — item explicitly says "manually verify ..." or describes something only a human can judge (e.g. "designer to review color contrast").
 
 Never use skip for:
-- Port-in-use / squatter dev servers (Step 4 reclaims the port instead).
+- Port-in-use / squatter dev servers (Step 4a gives this run its own isolated free port instead of reusing the canonical one — there is nothing to reclaim or kill).
 - Dev server failing to start (that's a `fail` on every browser item, per Step 4 step 4).
 - Missing seed data, wrong DB pointed at, env not loaded — diagnose, fix the local env, and re-run; if still impossible, mark `fail` with the specific local-env reason so the summary's "local infra" banner can surface it.
 
