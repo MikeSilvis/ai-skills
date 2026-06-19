@@ -73,6 +73,58 @@ ToolSearch query="select:mcp__playwright__browser_navigate,mcp__playwright__brow
 
 iOS flows do not require deferred-tool loading — `xcrun simctl` and `npx serve-sim` are invoked via Bash. The setup happens in Step 4b.
 
+## Step 3.5 — Is a visual walkthrough necessary?
+
+Before starting any dev server (Step 4a) or iOS build (Step 4b), decide whether
+firing a browser/simulator can actually reveal anything. Read the PR diff:
+
+```bash
+gh pr diff $PR
+```
+
+Declare **visual verification not necessary** if EITHER criterion holds; otherwise
+proceed to Step 4a/4b unchanged.
+
+**Criterion 1 — no user-visible surface.** No changed line affects rendered output.
+
+- *Visible* (do NOT skip): JSX/TSX/template markup, SwiftUI view bodies, CSS/styling,
+  user-facing copy/i18n strings, client-side event handlers, conditional rendering /
+  control flow in a view, routing/navigation, form handling.
+- *Not visible* (skip-eligible): server routes/handlers with unchanged response shape,
+  DB/schema/migrations, types/interfaces, tests, build/CI/config, docs, comments,
+  logging, dependency bumps with no behaviour change, pure refactors that preserve output.
+
+**Criterion 2 — low-risk simple change** (applies even when a visible surface is
+touched). Skip-eligible only when ALL hold:
+
+- The diff is small and localized (a few lines; one or two files).
+- Its rendered effect is obvious from reading the diff — you would be highly confident
+  it is correct without seeing it render.
+- It is a class where a walkthrough rarely catches anything: a static copy/string tweak,
+  a constant value, a trivial style-token change, a behaviour-preserving prop/variable
+  rename, dead-code removal, a comment.
+
+**Always run the walkthrough** (Criterion 2 never applies), regardless of size, when the
+diff touches: conditional rendering / control flow, event handlers, state, effects, data
+fetching / async behaviour, layout-affecting structural markup, new components, routing,
+or forms.
+
+**Bias:** skip only when confident. When it is genuinely unclear whether a change is
+non-visual or low-risk, run the walkthrough — a missed UI regression is worse than one
+unnecessary run. "Strict" means strict gating on firing the browser, not on skipping QA.
+
+**When not necessary:**
+
+- Mark every browser- and iOS-classified item `skip` with reason
+  `not necessary: <no user-visible surface | low-risk change — <why>>`.
+- Do NOT start the dev server (Step 4a) or build/boot the app (Step 4b).
+- STILL run any CLI / code-check items — those are cheap and orthogonal.
+- Do not flip any `[ ]`→`[x]` for the skipped items (they were not verified).
+- **Pipeline mode** (running under the auto-quality wrapper, which forbids comments):
+  record the skip in `.auto-test-plan-result.json` with `"verification":"not-necessary"`
+  and a `"reason"`, per the wrapper's prompt. **Manual mode:** report it in the Step 7
+  comment (see the "visual verification not necessary" variant there).
+
 ## Step 4a — Dev server (only if a browser flow needs it)
 
 Skip this step entirely if no item is classified `browser flow`.
@@ -299,6 +351,21 @@ gh pr comment $PR --body "$(cat <<'EOF'
 EOF
 )"
 ```
+
+**When the whole walkthrough was gated as not-necessary** (Step 3.5), lead with the
+reason instead of an empty results list:
+
+```markdown
+**Test plan — visual verification not necessary**
+
+The diff has no user-visible surface (<what changed, e.g. server logic + types only>),
+so I did not start a dev server or click through the UI. Relied on CI.
+
+- ⏭️ <item> — not necessary: <reason>
+```
+
+This applies to **manual** runs only. In pipeline mode the wrapper owns the comment and
+the verdict travels via `.auto-test-plan-result.json` (Step 3.5), so post nothing.
 
 After posting, output the comment URL to the user along with a one-line top-level summary (e.g. `Ran 7 items: 4 pass, 1 fixed, 1 fail, 1 skip. Pushed 1 fix commit. Boxes flipped for 5 items.`).
 
