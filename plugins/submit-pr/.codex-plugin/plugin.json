@@ -1,0 +1,26 @@
+{
+  "name": "submit-pr",
+  "version": "0.1.0",
+  "description": "Create a draft PR, get user approval on the body, mark it ready for review, and notify Slack.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/submit-pr",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Submit PR",
+    "shortDescription": "Create a draft PR, get user approval on the body, mark it ready for review, and notify Slack.",
+    "longDescription": "Create a draft PR, get user approval on the body, mark it ready for review, and notify Slack. Use when submitting, publishing, or sending a PR for review, or when the user says /msilvis:submit-pr, \"send PR\", \"open PR for review\", or \"submit for review\".",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/submit-pr"
+  }
+}

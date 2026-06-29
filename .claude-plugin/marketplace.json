@@ -182,6 +182,17 @@
       "category": "development",
       "source": "./plugins/site-modernize",
       "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/site-modernize"
+    },
+    {
+      "name": "submit-pr",
+      "description": "Create a draft PR, get user approval on the body, mark it ready for review, and notify Slack. Use when submitting, publishing, or sending a PR for review, or when the user says /msilvis:submit-pr, \"send PR\", \"open PR for review\", or \"submit for review\".",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/submit-pr",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/submit-pr"
     }
   ]
 }
