@@ -96,6 +96,17 @@
       "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/github-pr-comment-resolution"
     },
     {
+      "name": "implement-audit-issues",
+      "description": "Implement the GitHub issues created or refined by an audit using multiple focused subagents — pulls the issues, groups them by priority (P0 correctness/security → P3 developer experience) and system area, dispatches non-overlapping workstream subagents, and ships small reviewable PRs with validation. Use when the user says \"Implement Audit Issues Using Fable 5 Extra Subagents\", \"implement the audit issues\", \"work through the audit issues\", or invokes `/msilvis:implement-audit-issues`.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/implement-audit-issues",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/implement-audit-issues"
+    },
+    {
       "name": "ios-simulator",
       "description": "Build, run, view, and interact with iOS apps on the Apple Simulator. Use when the user asks to build, run, install, stream, screenshot, tap, scroll, swipe, rotate, grant permissions, or inspect an app on an iOS/iPadOS/watchOS Simulator.",
       "author": {

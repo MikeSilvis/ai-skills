@@ -1,0 +1,26 @@
+{
+  "name": "implement-audit-issues",
+  "version": "0.1.0",
+  "description": "Implement the GitHub issues created or refined by an audit using multiple focused subagents — pulls the issues, groups them by priority and system area, dispatches non-overlapping workstream subagents, and ships small reviewable PRs with validation.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/implement-audit-issues",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Implement Audit Issues",
+    "shortDescription": "Implement audited GitHub issues with focused subagents — grouped by priority and area, shipped as small reviewable PRs.",
+    "longDescription": "Implement the GitHub issues created or refined by an audit using multiple focused subagents — pulls the issues, groups them by priority (P0 correctness/security → P3 developer experience) and system area, dispatches non-overlapping workstream subagents, and ships small reviewable PRs with validation. Use when the user says \"Implement Audit Issues Using Fable 5 Extra Subagents\", \"implement the audit issues\", \"work through the audit issues\", or invokes `/msilvis:implement-audit-issues`.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/implement-audit-issues"
+  }
+}
