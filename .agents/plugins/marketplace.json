@@ -101,6 +101,18 @@
       "category": "Engineering"
     },
     {
+      "name": "implement-audit-issues",
+      "source": {
+        "source": "local",
+        "path": "./plugins/implement-audit-issues"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
       "name": "ios-simulator",
       "source": {
         "source": "local",

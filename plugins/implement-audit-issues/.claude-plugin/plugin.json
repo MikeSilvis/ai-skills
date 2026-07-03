@@ -1,0 +1,9 @@
+{
+  "name": "implement-audit-issues",
+  "description": "Implement the GitHub issues created or refined by an audit using multiple focused subagents — pulls the issues, groups them by priority (P0 correctness/security → P3 developer experience) and system area, dispatches non-overlapping workstream subagents, and ships small reviewable PRs with validation. Use when the user says \"Implement Audit Issues Using Fable 5 Extra Subagents\", \"implement the audit issues\", \"work through the audit issues\", or invokes `/msilvis:implement-audit-issues`.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/implement-audit-issues"
+}
