@@ -1,0 +1,9 @@
+{
+  "name": "stacked-prs",
+  "description": "Break a large change into a stack of dependent pull requests using the gh-stack extension, so each layer stays small and independently reviewable. Use when the user says \"stack this PR\", \"split this into stacked PRs\", \"use stacked PRs\", \"gh stack\", or wants to build a big feature as an ordered chain of small, dependent PRs.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/stacked-prs"
+}

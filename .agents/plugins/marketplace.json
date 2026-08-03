@@ -209,6 +209,18 @@
       "category": "Engineering"
     },
     {
+      "name": "stacked-prs",
+      "source": {
+        "source": "local",
+        "path": "./plugins/stacked-prs"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
       "name": "submit-pr",
       "source": {
         "source": "local",

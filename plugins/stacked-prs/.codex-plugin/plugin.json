@@ -1,0 +1,26 @@
+{
+  "name": "stacked-prs",
+  "version": "0.1.0",
+  "description": "Break a large change into a stack of dependent pull requests using the gh-stack extension.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/stacked-prs",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Stacked PRs",
+    "shortDescription": "Break a large change into a stack of dependent pull requests using the gh-stack extension.",
+    "longDescription": "Break a large change into a stack of dependent pull requests using the gh-stack extension, so each layer stays small and independently reviewable. Use when the user says \"stack this PR\", \"split this into stacked PRs\", \"use stacked PRs\", \"gh stack\", or wants to build a big feature as an ordered chain of small, dependent PRs.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/stacked-prs"
+  }
+}
