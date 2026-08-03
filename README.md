@@ -66,6 +66,7 @@ curl -fsSL "https://raw.githubusercontent.com/MikeSilvis/ai-skills/main/plugins/
 | `code-quality-ship` | Run the quality pass and auto-merge when CI is green and the change is simple. |
 | `github-pr-comment-resolution` | Triage PR review comments, update code, draft/post replies. |
 | `pr-test-runner` | Parse a PR `## Test plan` checklist, execute it, fix failures, update the PR. |
+| `stacked-prs` | Split a large change into a stack of small, dependent PRs with the `gh-stack` extension. |
 | `qa-run` | Run a visual + functional QA pass on a web app, fix issues, open a PR. |
 | `repo-setup` | Bootstrap a cloned or new repo for local development. |
 | `manage-skills` | Create, edit, or organize Claude/Codex/Cursor skills. |
