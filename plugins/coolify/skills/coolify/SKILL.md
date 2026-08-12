@@ -44,23 +44,13 @@ coolify context verify
 
 Config lives at `~/.config/coolify/config.json`. `coolify context list` shows all contexts with tokens masked — safe to run.
 
-## Token Scope — Read This Before Saying "It Doesn't Exist"
+## What Actually Lives Here
 
-**An API token is scoped to a single Coolify team.** `app list`, `database list`, `service list`, `projects list`, and `resources list` only return resources in that team. A project that's plainly visible in the dashboard will be absent from CLI output if it belongs to another team.
+**Siltop is the only project in Coolify.** Other services that used to run here have moved off it. A short `app list` — one application, no databases, no services — is the expected, healthy state, not a symptom of a scoping problem and not a reason to go hunting.
 
-```bash
-coolify team current   # which team this token can see
-coolify team list      # teams the token can enumerate
-```
+If you're asked to do something in Coolify for a project that isn't Siltop, the likely answer is that it isn't hosted on Coolify anymore. Say so and ask where it lives now, rather than assuming the CLI is hiding it.
 
-If the resource you want isn't listed, do **not** conclude it's gone. Either mint a token in the owning team and add it as a second context — omit `-d` so it doesn't steal the default, then select it per command:
-
-```bash
-coolify context add <team-name> "$URL" <token>     # no -d
-coolify --context <team-name> app list
-```
-
-Or use the browser for that one project.
+One caveat if that ever changes: an API token is scoped to a single Coolify team, so `app list` and friends only return that team's resources. There is currently one team (`Root Team`), so this cannot bite today — `coolify team current` confirms it. If a second team appears, add a separate context for it, omitting `-d` so it doesn't steal the default, and select it per command with `coolify --context <name> <cmd>`.
 
 ## Discover UUIDs
 
@@ -188,5 +178,5 @@ Also dashboard-only: Shared Variables (team-wide env), notification/webhook conf
 - Prefer `deploy name` over `deploy uuid` — names are stable and readable in your summary back to the user.
 - `--format json | jq` beats parsing the box-drawing table output.
 - `coolify app update` changes config (branch, domains, build/start commands, health check) without a redeploy; follow with `coolify deploy` to apply.
-- `coolify --context <name> <cmd>` overrides the default context per invocation — useful with one context per team.
+- `coolify --context <name> <cmd>` overrides the default context per invocation. The CLI ships prebuilt `cloud` and `localhost` contexts alongside the real one, so check `coolify context list` if a command returns surprising data — you may be pointed at the wrong instance.
 - `coolify update` upgrades the CLI itself.
