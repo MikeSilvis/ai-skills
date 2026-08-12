@@ -1,6 +1,6 @@
 {
   "name": "coolify",
-  "description": "Manage Coolify self-hosting platform via Playwright browser automation. Use when the user asks to deploy, check status, manage services, view logs, or configure anything in Coolify.",
+  "description": "Manage Coolify self-hosting platform via the official `coolify` CLI. Use when the user asks to deploy, check status, manage apps/databases/services, read logs, or edit environment variables in Coolify. Falls back to browser automation only for deployment build logs and the in-app terminal, which the API does not expose.",
   "author": {
     "name": "Mike Silvis",
     "url": "https://github.com/MikeSilvis"
