@@ -9,7 +9,7 @@ Free disk space on a Coolify server by opening the in-app terminal (Playwright) 
 
 ## Step 1 — Load Credentials & Login
 
-Same as the `coolify` skill — read `~/Development/dotfiles/.env` for `COOLIFY_URL`, `COOLIFY_EMAIL`, `COOLIFY_PASSWORD`. **Never log or echo credentials.**
+Same as the `coolify` skill's Browser Fallback section — read `~/Development/dotfiles/.env` for `COOLIFY_URL`, `COOLIFY_EMAIL`, `COOLIFY_PASSWORD`. **Never log or echo credentials.** The server shell is one of the few things the Coolify API does not expose, so this skill stays browser-driven even though `coolify` is now CLI-first.
 
 1. `browser_navigate` to `${COOLIFY_URL}/login`
 2. `browser_fill_form` — email field has `name="email"`, password is the other textbox

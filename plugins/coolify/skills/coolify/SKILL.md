@@ -1,76 +1,182 @@
 ---
 name: coolify
-description: Manage Coolify self-hosting platform via Playwright browser automation. Use when the user asks to deploy, check status, manage services, view logs, or configure anything in Coolify.
+description: Manage Coolify self-hosting platform via the official `coolify` CLI. Use when the user asks to deploy, check status, manage apps/databases/services, read logs, or edit environment variables in Coolify. Falls back to browser automation only for deployment build logs and the in-app terminal, which the API does not expose.
 ---
 
 # Coolify
 
-Drive the Coolify dashboard with the Playwright MCP. The two common tasks are **diagnosing a failed deploy** and **editing env vars** — they get top billing below.
+Drive Coolify with the official CLI (`coolify`, from `coollabsio/coolify-cli`). It talks to the Coolify API with a saved API token — no browser, no password login, no Playwright.
 
-## Login
+**Use the CLI for everything it covers.** Fall back to the browser only for what the API genuinely does not expose — deployment build logs and the server shell chief among them (see [Browser Fallback](#browser-fallback)).
 
-Read `~/Development/dotfiles/.env` for `COOLIFY_URL`, `COOLIFY_EMAIL`, `COOLIFY_PASSWORD`. Never log credentials.
+Full command catalog: `references/commands.md`. Exhaustive upstream reference: <https://raw.githubusercontent.com/coollabsio/coolify-cli/main/llms-full.txt>.
 
-1. `browser_navigate` → `${COOLIFY_URL}/login`
-2. `browser_fill_form` — email field is `name="email"`, password is the other textbox
-3. `browser_click` "Login" — confirm redirect to `/` (title `[Coolify] Dashboard | Coolify`)
+## Safety
 
-If the URL stays on `/login`, snapshot to diagnose.
+- **Never pass `-s` / `--show-sensitive` unless the user explicitly asks for a secret value.** These tokens often carry sensitive-data permission, so `-s` dumps real secrets (API keys, DB URLs, passwords) straight into the transcript. Without it every value renders as `********`, which is what you want almost always.
+- **Never echo the API token.** Reference it by path (`"$(tr -d '\n' < ~/.config/coolify/token)"`) so the value stays out of the transcript.
+- Confirm before `delete`, `stop`, `database delete`, and `app env delete` — these are destructive and mostly irreversible. `restart` and `deploy` cause brief downtime; say so before running them.
+- `app env sync` **updates and creates but never deletes**. It cannot be used to remove a variable — use `app env delete` for that.
 
-## Known IDs
+## Bootstrap
 
-Navigate directly — don't waste snapshots discovering these:
+Check first — if `coolify context verify` succeeds, skip this entire section.
 
-- **Siltop**: `/project/yigq03fkxrvp4lr52i5bp566/environment/chsb8glurvyjrlj9l4yuojdt/application/n12dggw9rku2pkxisijlwjnz` (db `dxut8rqjkfjqktdgofa9kgp4`)
-- **D2 Ghost**: `/project/us04gc844kssg8g80wo04kss/environment/t4kckks4gwos08w08w0o008o`
-- **Logs**: `/project/z40wssk4wws0swgowwk0o8w0/environment/u44k4w4gg8ooc0w88co840ok`
-- **Lumina**: `/project/h4gocsooggokgoo0g8wgosk4/environment/twcs44gwgw8s0ok84skc0sow`
-- **Portal**: `/project/i8oc84kkw0ok4wossos4co4c/environment/uwo0okwg0g884cgogo4o84wo`
+```bash
+coolify context verify
+```
 
-For unknown projects, snapshot `/` once to grab IDs.
+Expected: `✓ Connection successful` / `✓ Authentication valid` / `✓ Coolify version: <x>`.
 
-App-level URL suffixes: `/deployment`, `/deployment/{id}`, `/logs`, `/environment-variables`.
+If the binary is missing:
+
+```bash
+brew install coollabsio/coolify-cli/coolify-cli
+```
+
+If there's no context, build one without ever reading the token into the transcript. `~/Development/dotfiles/.env` holds `COOLIFY_URL`; the API token lives at `~/.config/coolify/token` (Laravel Sanctum format, `<id>|<48 chars>`). Generate a new one at `${COOLIFY_URL}/security/api-tokens` if that file is absent.
+
+```bash
+URL=$(grep '^COOLIFY_URL=' ~/Development/dotfiles/.env | cut -d= -f2- | tr -d '"'); URL="${URL%/}"
+coolify context add -d "${URL#https://}" "$URL" "$(tr -d '\n' < ~/.config/coolify/token)"
+coolify context verify
+```
+
+Config lives at `~/.config/coolify/config.json`. `coolify context list` shows all contexts with tokens masked — safe to run.
+
+## What Actually Lives Here
+
+**Siltop is the only project in Coolify.** Other services that used to run here have moved off it. A short `app list` — one application, no databases, no services — is the expected, healthy state, not a symptom of a scoping problem and not a reason to go hunting.
+
+If you're asked to do something in Coolify for a project that isn't Siltop, the likely answer is that it isn't hosted on Coolify anymore. Say so and ask where it lives now, rather than assuming the CLI is hiding it.
+
+One caveat if that ever changes: an API token is scoped to a single Coolify team, so `app list` and friends only return that team's resources. There is currently one team (`Root Team`), so this cannot bite today — `coolify team current` confirms it. If a second team appears, add a separate context for it, omitting `-d` so it doesn't steal the default, and select it per command with `coolify --context <name> <cmd>`.
+
+## Discover UUIDs
+
+Every command takes a Coolify UUID (never a numeric ID — teams are the sole exception, they use numeric IDs). Discover rather than hardcode:
+
+```bash
+coolify resources list              # everything the token can see, with type + status
+coolify projects list               # project UUIDs
+coolify projects get <project-uuid> # environment UUIDs within a project
+coolify app list                    # app uuid, name, status, git_branch, fqdn
+coolify server list                 # server UUIDs (IP/user/port masked without -s)
+```
+
+Add `--format json` when you need to parse; `--format pretty` when debugging. Table is the default and is the most readable for reporting back to the user.
+
+## Check Status
+
+```bash
+coolify resources list
+coolify app get <app-uuid>
+```
+
+`status` reads `running:healthy`, `running:unhealthy`, `exited`, or `stopped`. `app get --format json` returns the full config — build pack, health check path, ports, domains, git repo/branch — which is usually what you actually need when diagnosing "why is this behaving oddly".
+
+## Deploy and Lifecycle
+
+```bash
+coolify deploy name <app-name>          # deploy by name — easier than UUID
+coolify deploy uuid <app-uuid>
+coolify deploy batch api,worker,web     # several at once
+coolify deploy uuid <uuid> --force      # force rebuild, ignoring cache
+coolify deploy list                     # in-flight deployments (empty when nothing is running)
+coolify deploy cancel <deployment-uuid>
+
+coolify app restart <app-uuid>
+coolify app stop <app-uuid>
+coolify app start <app-uuid>
+```
+
+`deploy list` shows only active/queued deployments — it returns `No data` when nothing is deploying. For deployment *history*, use `app deployments list` below.
 
 ## Diagnose a Failed Deploy
 
-1. Go to `…/application/{app_id}/deployment` — heading shows `Deployments (N)`, paginated 10 per page. Each row has Status (`Success`/`Failed`), commit SHA + message, duration, age, and Webhook/Manual.
-2. Click into the latest **Failed** row → `…/deployment/{deployment_id}`.
-3. **The accessibility snapshot will not show log text** — logs live in `div.flex.flex-col.overflow-y-auto.p-2.px-4` and one child element typically holds thousands of lines. Pull the last child's `innerText` directly:
+```bash
+coolify app deployments list <app-uuid>
+```
 
-   ```js
-   () => {
-     const c = document.querySelector('.flex.flex-col.overflow-y-auto.p-2.px-4');
-     if (!c) return 'Log container not found';
-     const last = c.children[c.children.length - 1];
-     return last ? last.innerText.split('\n').slice(-200).join('\n') : 'empty';
-   }
-   ```
+Returns the recent deployments with `deployment_uuid`, `status` (`finished` / `failed` / `in_progress`), commit SHA, and server. Identify the newest `failed` row.
 
-4. Search the output for `error`, `failed`, `unhealthy`, `exit code`. Summarize the root cause to the user in 2–3 sentences and let them decide next steps. The standard branch → PR → merge → redeploy flow is covered by the global git rules — don't reinvent it here.
+**Build logs are not available through the CLI.** On Coolify 4.x the `GET /api/v1/deployments/{uuid}` response contains no `logs` field at all, so `coolify app deployments logs` prints `No logs available for deployment <uuid> (Status: ...)` for *every* deployment, finished or failed. This is an API gap, not a permissions problem and not log retention — do not burn turns retrying it with different flags. Go to [Browser Fallback](#browser-fallback) for the actual build output.
 
-## Edit Environment Variables
+What the CLI *can* tell you before you open a browser: which commit failed, whether later deploys succeeded (so the failure is already resolved), and the app's current health:
 
-URL: `…/application/{app_id}/environment-variables`. Page splits into **Production Environment Variables** and **Preview Deployments Environment Variables**, each rendered as a list of inline rows.
+```bash
+coolify app deployments list <app-uuid> --format json
+coolify app get <app-uuid>            # is it running now despite the failed deploy?
+coolify app logs <app-uuid> -n 200    # runtime errors, which often explain the failure
+```
 
-Each row has three text inputs (`name="key"`, `name="value"` (type=password — toggle to reveal), `name="comment"`) plus four checkboxes (Build Variable, Multiline, Literal, Shared) and per-row **Update / Lock / Delete** buttons. A locked variable can't be edited until unlocked.
+## Runtime Logs
 
-Above the list:
-- **+ Add** — opens a "New Environment Variable" modal with the same fields. Submit to create.
-- **Developer view** — toggles a bulk `KEY=value` textarea for paste-in edits; click again or **Save** to commit.
+Container logs *do* work over the API — this is different from build logs:
 
-After any change Coolify shows a **"Confirm Application Stopping?"** modal — confirming triggers a restart so the new value takes effect. Tell the user this will cause a brief restart before clicking through.
+```bash
+coolify app logs <app-uuid> -n 200
+coolify app logs <app-uuid> -f                 # follow, like tail -f
+coolify app logs <app-uuid> --show-timestamps
+coolify app logs <app-uuid> --service web      # one container in a compose app
+coolify database logs <db-uuid>
+coolify service logs <svc-uuid> --sub-service-name <name>
+```
 
-For org-wide values, the project page has a **Shared Variables** tab — prefer it when the same secret is reused across apps in the team.
+Default is 100 lines. For JSON-structured app logs, pipe through `jq` to filter by level rather than eyeballing the raw stream.
 
-## Other Actions
+## Environment Variables
 
-- **Status**: snapshot `/` — projects show inline; click into a project to see Applications/Databases with `running`/`stopped`/`failed` badges.
-- **Redeploy / Stop**: top nav of any application page has Redeploy and Stop buttons. Confirm destructive actions before clicking.
-- **App logs** (not deploy logs): `…/application/{app_id}/logs`.
-- **Webhook config** (Notifications → Webhook tab): per-team setup. For the Siltop deploy-status webhook contract, see `apps/web/app/api/v1/webhooks/coolify/route.ts` in the Siltop repo.
+```bash
+coolify app env list <app-uuid>                     # values masked — the safe default
+coolify app env get <app-uuid> <KEY>
+coolify app env create <app-uuid> --key API_KEY --value <value>
+coolify app env update <app-uuid> <KEY> --value <value>
+coolify app env delete <app-uuid> <env-uuid>        # takes the env UUID, not the key
+coolify app env sync <app-uuid> --file .env         # update existing + create missing
+```
+
+Notes that matter:
+
+- `env list` shows `is_buildtime`, `is_runtime`, `is_preview`, `is_literal`, `is_shared` per row — check these before overwriting, since build-time-only vars behave differently from runtime ones.
+- `--build-time` and `--runtime` both default to **true** on create/update. Pass them deliberately.
+- `env delete` needs the variable's UUID (from `env list`), while `env get`/`env update` accept either the UUID or the key.
+- Coolify does not hot-reload env changes. **Redeploy or restart for a new value to take effect** — tell the user that's coming before you do it.
+- `database env` and `service env` mirror these commands; `service env` has no `--preview`.
+
+## Browser Fallback
+
+Two things the API does not expose. For these, and only these, drive the dashboard with the Playwright MCP.
+
+Credentials: `~/Development/dotfiles/.env` → `COOLIFY_URL`, `COOLIFY_EMAIL`, `COOLIFY_PASSWORD`. Navigate to `${COOLIFY_URL}/login`, fill `name="email"` + the other textbox, click Login, confirm redirect to `/`. Never log credentials. **If a guardrail blocks the password entry, stop and hand the login to the user** — then continue from the authenticated session.
+
+### 1. Deployment build logs
+
+Navigate to `…/application/{app_id}/deployment/{deployment_id}`. The accessibility snapshot **will not** show log text — logs live in `div.flex.flex-col.overflow-y-auto.p-2.px-4` and one child holds thousands of lines. Pull `innerText` directly:
+
+```js
+() => {
+  const c = document.querySelector('.flex.flex-col.overflow-y-auto.p-2.px-4');
+  if (!c) return 'Log container not found';
+  const last = c.children[c.children.length - 1];
+  return last ? last.innerText.split('\n').slice(-200).join('\n') : 'empty';
+}
+```
+
+Search for `error`, `failed`, `unhealthy`, `exit code`. Summarize root cause in 2–3 sentences and let the user decide next steps.
+
+Dashboard URLs are `…/project/{project_uuid}/environment/{environment_uuid}/application/{app_uuid}` — all three UUIDs come from `projects list`, `projects get`, and `app list`, so build the URL from CLI output instead of guessing. App-level suffixes: `/deployment`, `/deployment/{id}`, `/logs`, `/environment-variables`.
+
+### 2. Server shell / disk cleanup
+
+`${COOLIFY_URL}/terminal` — see the separate `coolify-disk-cleanup` skill, which owns that workflow end to end.
+
+Also dashboard-only: Shared Variables (team-wide env), notification/webhook config, and anything under team settings.
 
 ## Tips
 
-- Navigate by URL, not by clicking through menus.
-- Snapshot only when you need element refs or to read dynamic content; prefer `browser_evaluate` for log-style content that the a11y tree drops.
-- After a mutation, snapshot once to confirm.
+- Prefer `deploy name` over `deploy uuid` — names are stable and readable in your summary back to the user.
+- `--format json | jq` beats parsing the box-drawing table output.
+- `coolify app update` changes config (branch, domains, build/start commands, health check) without a redeploy; follow with `coolify deploy` to apply.
+- `coolify --context <name> <cmd>` overrides the default context per invocation. The CLI ships prebuilt `cloud` and `localhost` contexts alongside the real one, so check `coolify context list` if a command returns surprising data — you may be pointed at the wrong instance.
+- `coolify update` upgrades the CLI itself.
