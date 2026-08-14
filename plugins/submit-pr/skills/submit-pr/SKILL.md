@@ -7,15 +7,28 @@ description: Use when submitting, publishing, or sending a PR for review. Also u
 
 Create a draft PR, get user approval on the body, mark it ready for review, and notify Slack.
 
-## Constants
+## Configuration
 
-| Name | Value |
-|------|-------|
-| SLACK_CHANNEL_NAME | `#business-money-code-reviews` |
-| SLACK_CHANNEL_ID | `C0AM3RB6753` |
-| JIRA_SITE | `gustohq.atlassian.net` |
-| JIRA_TICKET_URL_BASE | `https://gustohq.atlassian.net/browse/` |
-| BRANCH_TICKET_PATTERN | Project prefix + number (e.g. `gm-12345-foo` → `GM-12345`) |
+This skill is organization-agnostic. Read these values from the repo's own
+`CLAUDE.md` / `AGENTS.md` (a `## submit-pr` section is the conventional place),
+or ask the user once and reuse the answer for the session. Do not hardcode them
+here.
+
+| Name | Meaning | Example |
+|------|---------|---------|
+| `SLACK_CHANNEL_ID` | Channel to notify. Prefer the ID over the name. | `C01234ABCDE` |
+| `SLACK_CHANNEL_NAME` | Human-readable channel, for the message only. | `#code-reviews` |
+| `JIRA_SITE` | Atlassian site host, or unset if the org has no Jira. | `example.atlassian.net` |
+| `JIRA_TICKET_URL_BASE` | Browse URL prefix. | `https://example.atlassian.net/browse/` |
+| `JIRA_MCP_TOOL` | Name of the connected Jira MCP tool that fetches an issue. | `mcp__<server>__getJiraIssue` |
+| `BRANCH_TICKET_PATTERN` | Prefix + number in branch names. | `abc-1234-foo` → `ABC-1234` |
+
+**Any of these may be unset.** Skip the corresponding step rather than guessing:
+no `JIRA_SITE` or `JIRA_MCP_TOOL` means skip the ticket lookup entirely; no
+`SLACK_CHANNEL_ID` means skip the notification and say so.
+
+The GitHub repo is never configured — always derive it from the checkout with
+`gh repo view --json nameWithOwner --jq .nameWithOwner`.
 
 ## Workflow
 
@@ -47,15 +60,16 @@ Run in parallel:
 - `git diff <merge-base>...HEAD` — final diff to go in
 - `git branch --show-current` — branch name (extract ticket if present)
 
-**Ticket extraction:** Only extract a ticket ID if the branch matches **BRANCH_TICKET_PATTERN** (e.g. `gm-12345-foo` -> `GM-12345`). Branches like `gm-do-something` or `fix-widget` have no ticket — do not attempt a JIRA lookup for these.
+**Ticket extraction:** Only extract a ticket ID if the branch matches **BRANCH_TICKET_PATTERN** (e.g. `abc-1234-foo` -> `ABC-1234`). Branches like `abc-do-something` or `fix-widget` have no ticket — do not attempt a ticket lookup for these.
 
-## Step 2: Fetch JIRA Ticket (if ticket ID found)
+## Step 2: Fetch the ticket (if a ticket ID was found)
 
-If a ticket ID was extracted from the branch name (e.g. `GM-12345`):
+Skip this step entirely if **JIRA_SITE** or **JIRA_MCP_TOOL** is unset.
 
-Use the `mcp__jiraconfluencegusto__getJiraIssue` tool:
+If a ticket ID was extracted from the branch name (e.g. `ABC-1234`), call the
+configured **JIRA_MCP_TOOL** with:
 - `cloudId`: **JIRA_SITE**
-- `issueIdOrKey`: the extracted ticket (e.g. `GM-12345`)
+- `issueIdOrKey`: the extracted ticket (e.g. `ABC-1234`)
 - `fields`: `["summary", "description", "status"]`
 - `responseContentFormat`: `markdown`
 
@@ -143,10 +157,12 @@ gh pr ready <number>
 
 ## Step 7: Send Slack Notification
 
-Send to **SLACK_CHANNEL_NAME** (channel ID: **SLACK_CHANNEL_ID**) using the Slack MCP tool. Use the channel ID directly; only fall back to searching for the channel by name if the ID fails. Message format:
+Skip this step and say so if **SLACK_CHANNEL_ID** is unset.
+
+Send to **SLACK_CHANNEL_NAME** (channel ID: **SLACK_CHANNEL_ID**) using the Slack MCP tool. Use the channel ID directly; only fall back to searching for the channel by name if the ID fails. Build the URL from the repo you derived with `gh repo view`, never a hardcoded one. Message format:
 
 ```
-:pr: <https://github.com/Gusto/zenpayroll/pull/NUMBER|PR Title>
+:pr: <https://github.com/<owner>/<repo>/pull/NUMBER|PR Title>
 A brief (2-to-3-sentence) description of the changes and why they're being made.
 ```
 
