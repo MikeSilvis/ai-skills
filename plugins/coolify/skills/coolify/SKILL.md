@@ -9,12 +9,15 @@ Drive Coolify with the official CLI (`coolify`, from `coollabsio/coolify-cli`). 
 
 **Use the CLI for everything it covers.** Fall back to the browser only for what the API genuinely does not expose — deployment build logs and the server shell chief among them (see [Browser Fallback](#browser-fallback)).
 
+**Reads always work; writes depend on the token's permission scope.** Before you promise to make a change in Coolify, confirm the saved token can actually write — see [Token Permissions](#token-permissions). A read-only token passes every connectivity check and fails only at the write itself.
+
 Full command catalog: `references/commands.md`. Exhaustive upstream reference: <https://raw.githubusercontent.com/coollabsio/coolify-cli/main/llms-full.txt>.
 
 ## Safety
 
 - **Never pass `-s` / `--show-sensitive` unless the user explicitly asks for a secret value.** These tokens often carry sensitive-data permission, so `-s` dumps real secrets (API keys, DB URLs, passwords) straight into the transcript. Without it every value renders as `********`, which is what you want almost always.
-- **Never echo the API token.** Reference it by path (`"$(tr -d '\n' < ~/.config/coolify/token)"`) so the value stays out of the transcript.
+- **Never echo the API token.** Keep it in a shell variable or read it from a file inline so the value stays out of the transcript — and never install one from the clipboard (see [Bootstrap](#bootstrap) for why).
+- **Check write scope before committing to a write.** Saying "I'll set that env var for you" and then hitting a 403 mid-task is worse than checking first — especially during a migration or cutover, where the fallback is the user doing it by hand under time pressure. See [Token Permissions](#token-permissions).
 - Confirm before `delete`, `stop`, `database delete`, and `app env delete` — these are destructive and mostly irreversible. `restart` and `deploy` cause brief downtime; say so before running them.
 - `app env sync` **updates and creates but never deletes**. It cannot be used to remove a variable — use `app env delete` for that.
 
@@ -26,7 +29,7 @@ Check first — if `coolify context verify` succeeds, skip this entire section.
 coolify context verify
 ```
 
-Expected: `✓ Connection successful` / `✓ Authentication valid` / `✓ Coolify version: <x>`.
+Expected: `✓ Connection successful` / `✓ Authentication valid` / `✓ Coolify version: <x>`. This proves the token is *valid*. It says nothing about what the token is allowed to do — go to [Token Permissions](#token-permissions) next.
 
 If the binary is missing:
 
@@ -34,15 +37,58 @@ If the binary is missing:
 brew install coollabsio/coolify-cli/coolify-cli
 ```
 
-If there's no context, build one without ever reading the token into the transcript. `~/Development/dotfiles/.env` holds `COOLIFY_URL`; the API token lives at `~/.config/coolify/token` (Laravel Sanctum format, `<id>|<48 chars>`). Generate a new one at `${COOLIFY_URL}/security/api-tokens` if that file is absent.
+### Where the token actually lives
+
+**The CLI reads its token from the context stored in `~/.config/coolify/config.json`.** `~/.config/coolify/token` is only a convenience copy — writing to it changes nothing until the value is handed to `coolify context add`. Anyone who "fixes" the token by overwriting that file alone will watch the old token keep being used and conclude, wrongly, that the new one is broken too.
+
+That file is also not guaranteed to hold a token. It has held a live Postgres connection string, pasted in by a clipboard-based install recipe at a moment when the clipboard held a database URL from an earlier step. So validate the shape before installing anything — a Coolify token is Laravel Sanctum format, `<id>|<48 chars>`:
+
+```bash
+tr -d '\n' < ~/.config/coolify/token | grep -qE '^[0-9]+\|[A-Za-z0-9]{40,}$' && echo "looks like a token" || echo "NOT a token — do not install this"
+```
+
+### Adding a context
+
+`~/Development/dotfiles/.env` holds `COOLIFY_URL`. Mint a token at `${COOLIFY_URL}/security/api-tokens` — pick **write** (or root) unless the task is genuinely read-only.
+
+Prompt for the value rather than reading it from the clipboard or a file. `read -rs` keeps it off the screen, out of the shell history, and immune to whatever `pbpaste` happens to be holding:
 
 ```bash
 URL=$(grep '^COOLIFY_URL=' ~/Development/dotfiles/.env | cut -d= -f2- | tr -d '"'); URL="${URL%/}"
-coolify context add -d "${URL#https://}" "$URL" "$(tr -d '\n' < ~/.config/coolify/token)"
-coolify context verify
+read -rs -p "Coolify API token: " T && printf '%s' "$T" > ~/.config/coolify/token && chmod 600 ~/.config/coolify/token
+coolify context add -d "${URL#https://}" "$URL" "$T" && coolify context verify
+unset T
 ```
 
-Config lives at `~/.config/coolify/config.json`. `coolify context list` shows all contexts with tokens masked — safe to run.
+Replacing the token on a context that already exists is a one-liner — no need to re-add it:
+
+```bash
+read -rs -p "Coolify API token: " T && coolify context set-token <context-name> "$T" && coolify context verify; unset T
+```
+
+Minting the token is a dashboard action behind the login. If a guardrail blocks that login, hand *only that step* to the user — stage everything else, then ask them to paste the token into the `read -rs` prompt.
+
+`coolify context list` shows all contexts with tokens masked — safe to run.
+
+## Token Permissions
+
+`context verify` passes identically for a read-only token and a write token. Every read — `app list`, `app env list`, `app logs`, `resources list`, even `deploy` — works fine. The first sign of trouble is the write itself:
+
+```
+API error 403 on applications/<uuid>/envs: Missing required permissions: write
+```
+
+So the only real check is to attempt a write. Probe with a throwaway key, then clean it up:
+
+```bash
+coolify app env create <app-uuid> --key _WRITE_PROBE --value ok
+coolify app env list <app-uuid> --format json | jq -r '.[] | select(.key=="_WRITE_PROBE") | .uuid'
+coolify app env delete <app-uuid> <env-uuid-from-above>
+```
+
+The probe is safe: Coolify does not hot-reload env changes, so an unused key that is created and deleted without a redeploy never reaches the running app.
+
+Run this **before** telling the user you'll make a change for them — not after. If it 403s, say so up front and route the change to the dashboard, rather than discovering the limitation halfway through a cutover. Fixing it means minting a token with write or root permission at `${COOLIFY_URL}/security/api-tokens` and re-running [Adding a context](#adding-a-context). Permissions are chosen when the token is created, so plan on issuing a new one rather than editing the existing one.
 
 ## What Actually Lives Here
 
@@ -138,6 +184,7 @@ coolify app env sync <app-uuid> --file .env         # update existing + create m
 
 Notes that matter:
 
+- `env list` is a read and always works; `create`, `update`, `delete`, and `sync` are writes and need a write-scoped token. A read-only token returns `403 ... Missing required permissions: write` — check [Token Permissions](#token-permissions) before you promise an env change.
 - `env list` shows `is_buildtime`, `is_runtime`, `is_preview`, `is_literal`, `is_shared` per row — check these before overwriting, since build-time-only vars behave differently from runtime ones.
 - `--build-time` and `--runtime` both default to **true** on create/update. Pass them deliberately.
 - `env delete` needs the variable's UUID (from `env list`), while `env get`/`env update` accept either the UUID or the key.
