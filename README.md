@@ -5,9 +5,9 @@ A plugin marketplace of reusable AI assistant skills for **Claude Code** and
 assistant when to invoke it and what to do.
 
 Skills cover repo workflows (`bug-bash`, `pr-test-runner`, `code-quality`),
-frontend references (`react-view-transitions`), tooling and ops (`coolify`,
-`circleci-failing-builds`, `ios-simulator`), and multi-file site generation
-(`site-modernize`).
+framework references (`react-view-transitions`, `swift-apple-engineering`),
+tooling and ops (`coolify`, `circleci-failing-builds`, `ios-simulator`), and
+multi-file site generation (`site-modernize`).
 
 ## Install
 
@@ -32,8 +32,9 @@ Add the marketplace once:
 codex plugin marketplace add MikeSilvis/ai-skills
 ```
 
-Then enable plugins from inside Codex (the `/plugin` UI lists everything the
-marketplace publishes), or pin them directly in `~/.codex/config.toml`:
+Plugins marked `INSTALLED_BY_DEFAULT` enable automatically when Codex refreshes
+the marketplace; `swift-apple-engineering` uses that policy. Enable other
+plugins from the `/plugin` UI, or pin them directly in `~/.codex/config.toml`:
 
 ```toml
 [plugins."bug-bash@msilvis-ai-skills"]
@@ -89,6 +90,7 @@ curl -fsSL "https://raw.githubusercontent.com/MikeSilvis/ai-skills/main/plugins/
 | Skill | Use when you want to… |
 | --- | --- |
 | `react-view-transitions` | Add Next.js App Router transitions with `next-view-transitions`. |
+| `swift-apple-engineering` | Apply pragmatic SwiftUI, UIKit interop, Swift concurrency, and testing defaults. |
 
 ### Site generation
 

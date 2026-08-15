@@ -231,6 +231,18 @@
         "authentication": "ON_INSTALL"
       },
       "category": "Engineering"
+    },
+    {
+      "name": "swift-apple-engineering",
+      "source": {
+        "source": "local",
+        "path": "./plugins/swift-apple-engineering"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
     }
   ]
 }
