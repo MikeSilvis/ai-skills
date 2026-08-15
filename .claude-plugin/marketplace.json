@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "msilvis-ai-skills",
-  "description": "Mike Silvis' library of reusable AI skills for repo workflows, ops, framework references, and site generation.",
+  "description": "Mike Silvis' library of reusable AI skills for repo workflows, ops, Apple apps, framework references, and site generation.",
   "owner": {
     "name": "Mike Silvis",
     "email": "mikesilvis@gmail.com"
@@ -226,6 +226,94 @@
       "category": "development",
       "source": "./plugins/swift-apple-engineering",
       "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/swift-apple-engineering"
+    },
+    {
+      "name": "apple-photos",
+      "description": "Search, inspect, export, and safely organize an Apple Photos library on macOS with osxphotos. Use when the user asks to find photos or videos by date, album, person, place, keyword, favorite status, or metadata; inspect albums or library statistics; export originals, edited assets, or sidecars; or preview and apply album or metadata changes.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "productivity",
+      "source": "./plugins/apple-photos",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-photos"
+    },
+    {
+      "name": "apple-messages",
+      "description": "Search local Messages history and safely send iMessage or SMS from macOS with imsg. Use when the user asks to list or resolve chats, search or summarize Messages history, inspect attachment metadata, watch a conversation, or send text or files through Messages with an explicit final confirmation.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "productivity",
+      "source": "./plugins/apple-messages",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-messages"
+    },
+    {
+      "name": "apple-notes",
+      "description": "Search, read, create, update, move within one account, and explicitly delete Apple Notes on macOS through a bundled native JXA bridge. Use when the user asks to browse Notes accounts or folders, find or read notes, create a note from complete plaintext, replace an attachment-free note's complete content, move a note between folders in the same account, or delete a specifically reconfirmed note.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "productivity",
+      "source": "./plugins/apple-notes",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-notes"
+    },
+    {
+      "name": "apple-reminders",
+      "description": "Inspect and manage Apple Reminders on macOS through remindctl's public EventKit integration. Use when the user asks to list, search, create, edit, reschedule, complete, delete, export, or open reminders or reminder lists, or to troubleshoot Reminders access.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "productivity",
+      "source": "./plugins/apple-reminders",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-reminders"
+    },
+    {
+      "name": "apple-contacts",
+      "description": "Work with Apple Contacts on macOS through the built-in AppleScript interface. Use when the user asks to find or disambiguate people and groups, inspect requested contact fields, create or update a contact, manage group membership, or help with a carefully confirmed delete or merge.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "productivity",
+      "source": "./plugins/apple-contacts",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-contacts"
+    },
+    {
+      "name": "apple-music",
+      "description": "Control the Music app and work with the user's Music library on macOS through built-in AppleScript. Use when the user asks to inspect now-playing state, play or pause, skip, change volume, find library tracks or playlists, create a playlist, add a resolved track, or perform a carefully confirmed library edit.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "productivity",
+      "source": "./plugins/apple-music",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-music"
+    },
+    {
+      "name": "apple-safari",
+      "description": "Inspect and safely control Safari on macOS through the built-in AppleScript interface. Use when the user asks to inspect scoped tab or window metadata, read requested page text, open or navigate a tab, close explicitly selected tabs, add an item to Reading List, show bookmarks, or perform a tightly reviewed page-JavaScript action.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "productivity",
+      "source": "./plugins/apple-safari",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-safari"
+    },
+    {
+      "name": "apple-shortcuts",
+      "description": "List, open for human review, run, and sign Apple Shortcuts on macOS. Use when the user asks to discover shortcut names or folders, open a shortcut in the app, run an existing shortcut with file input or output, or sign a shortcut file for sharing.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "productivity",
+      "source": "./plugins/apple-shortcuts",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-shortcuts"
     }
   ]
 }

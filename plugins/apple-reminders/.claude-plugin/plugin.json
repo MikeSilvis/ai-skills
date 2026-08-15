@@ -1,0 +1,9 @@
+{
+  "name": "apple-reminders",
+  "description": "Inspect and manage Apple Reminders on macOS through remindctl's public EventKit integration. Use when the user asks to list, search, create, edit, reschedule, complete, delete, export, or open reminders or reminder lists, or to troubleshoot Reminders access.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-reminders"
+}

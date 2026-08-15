@@ -1,0 +1,29 @@
+{
+  "name": "apple-safari",
+  "version": "0.1.0",
+  "description": "Inspect and safely control Safari tabs, navigation, and Reading List on macOS.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-safari",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Apple Safari",
+    "shortDescription": "Inspect and safely control Safari browsing state.",
+    "longDescription": "Inspect scoped tabs and page text, open or navigate reviewed URLs, close resolved tabs, and add Reading List items through macOS AppleScript with strict session privacy and JavaScript controls.",
+    "developerName": "Mike Silvis",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-safari",
+    "defaultPrompt": [
+      "Use $apple-safari to summarize my current tab without exposing other tabs."
+    ]
+  }
+}

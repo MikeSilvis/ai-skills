@@ -1,0 +1,29 @@
+{
+  "name": "apple-shortcuts",
+  "version": "0.1.0",
+  "description": "List, open for review, run, and sign Apple Shortcuts with explicit side-effect checks.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-shortcuts",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Apple Shortcuts",
+    "shortDescription": "List, review, and safely run Apple Shortcuts.",
+    "longDescription": "Discover Apple Shortcuts, open them for review, run them with controlled file inputs and outputs, and sign shortcut files while treating each workflow as potentially consequential automation.",
+    "developerName": "Mike Silvis",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "defaultPrompt": [
+      "Use $apple-shortcuts to open for review or run a shortcut with checked inputs and outputs."
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-shortcuts"
+  }
+}

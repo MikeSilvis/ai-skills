@@ -1,0 +1,28 @@
+{
+  "name": "apple-notes",
+  "version": "0.1.0",
+  "description": "Safely search, read, create, update, move within one account, and explicitly delete Apple Notes by stable ID.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-notes",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Apple Notes",
+    "shortDescription": "Read and safely edit Apple Notes through a native local bridge.",
+    "longDescription": "Browse Notes with explicit scan limits, read plaintext or HTML by stable ID, and perform context-checked plaintext creates, attachment-safe full-content updates, same-account native moves, or explicitly reconfirmed deletes through a bundled Notes.sdef-backed JXA bridge.",
+    "developerName": "Mike Silvis",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-notes",
+    "defaultPrompt": [
+      "Use $apple-notes to safely find or manage a note by stable ID, with folder-context checks and plaintext write previews."
+    ]
+  }
+}

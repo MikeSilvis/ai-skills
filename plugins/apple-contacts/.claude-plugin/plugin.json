@@ -1,0 +1,9 @@
+{
+  "name": "apple-contacts",
+  "description": "Work with Apple Contacts on macOS through the built-in AppleScript interface. Use when the user asks to find or disambiguate people and groups, inspect requested contact fields, create or update a contact, manage group membership, or help with a carefully confirmed delete or merge.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-contacts"
+}

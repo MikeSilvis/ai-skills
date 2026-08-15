@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Safari"
+  short_description: "Inspect and safely control Safari tabs and browsing state"
+  default_prompt: "Use $apple-safari to inspect or manage my Safari session while protecting private page content."

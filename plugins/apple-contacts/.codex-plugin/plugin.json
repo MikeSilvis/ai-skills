@@ -1,0 +1,28 @@
+{
+  "name": "apple-contacts",
+  "version": "0.1.0",
+  "description": "Find and safely manage people and groups in Apple Contacts on macOS.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-contacts",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Apple Contacts",
+    "shortDescription": "Find and safely manage contacts and groups.",
+    "longDescription": "Find and disambiguate contacts, inspect requested fields, create or update records, and manage groups through macOS AppleScript with privacy limits, confirmation gates, and read-back verification.",
+    "developerName": "Mike Silvis",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-contacts",
+    "defaultPrompt": [
+      "Use $apple-contacts to find a contact without exposing unrelated details."
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "apple-safari",
+  "description": "Inspect and safely control Safari on macOS through the built-in AppleScript interface. Use when the user asks to inspect scoped tab or window metadata, read requested page text, open or navigate a tab, close explicitly selected tabs, add an item to Reading List, show bookmarks, or perform a tightly reviewed page-JavaScript action.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-safari"
+}

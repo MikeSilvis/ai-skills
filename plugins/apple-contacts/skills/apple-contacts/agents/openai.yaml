@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Contacts"
+  short_description: "Find and safely manage people and groups in Contacts"
+  default_prompt: "Use $apple-contacts to look up or manage the requested contact without exposing unrelated details."

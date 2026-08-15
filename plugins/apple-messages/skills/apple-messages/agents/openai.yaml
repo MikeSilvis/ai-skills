@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Messages"
+  short_description: "Search iMessage history and safely send messages"
+  default_prompt: "Use $apple-messages to search Messages or preview a send for my explicit confirmation."

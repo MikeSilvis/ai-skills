@@ -1,0 +1,28 @@
+{
+  "name": "apple-messages",
+  "version": "0.1.0",
+  "description": "Search local Messages history and safely send iMessage or SMS from macOS.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-messages",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Apple Messages",
+    "shortDescription": "Search Messages and send only after exact confirmation.",
+    "longDescription": "List and resolve Messages chats, search or read bounded local history, inspect attachment metadata, and prepare iMessage or SMS sends with explicit recipient, content, service, and attachment confirmation immediately before delivery.",
+    "developerName": "Mike Silvis",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-messages",
+    "defaultPrompt": [
+      "Use $apple-messages to search Messages or prepare the requested message action safely."
+    ]
+  }
+}

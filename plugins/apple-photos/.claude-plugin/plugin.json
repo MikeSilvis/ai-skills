@@ -1,0 +1,9 @@
+{
+  "name": "apple-photos",
+  "description": "Search, inspect, export, and safely organize an Apple Photos library on macOS with osxphotos. Use when the user asks to find photos or videos by date, album, person, place, keyword, favorite status, or metadata; inspect albums or library statistics; export originals, edited assets, or sidecars; or preview and apply album or metadata changes.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-photos"
+}

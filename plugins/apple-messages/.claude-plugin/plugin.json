@@ -1,0 +1,9 @@
+{
+  "name": "apple-messages",
+  "description": "Search local Messages history and safely send iMessage or SMS from macOS with imsg. Use when the user asks to list or resolve chats, search or summarize Messages history, inspect attachment metadata, watch a conversation, or send text or files through Messages with an explicit final confirmation.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-messages"
+}

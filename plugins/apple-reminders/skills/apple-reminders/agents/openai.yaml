@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Reminders"
+  short_description: "Query and safely manage Apple Reminders and lists"
+  default_prompt: "Use $apple-reminders to review or update my reminders with explicit write confirmation."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Shortcuts"
+  short_description: "List, review, and safely run Apple Shortcuts"
+  default_prompt: "Use $apple-shortcuts to open for review or run a shortcut with checked inputs and outputs."

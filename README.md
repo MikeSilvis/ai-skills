@@ -6,8 +6,10 @@ assistant when to invoke it and what to do.
 
 Skills cover repo workflows (`bug-bash`, `pr-test-runner`, `code-quality`),
 framework references (`react-view-transitions`, `swift-apple-engineering`),
-tooling and ops (`coolify`, `circleci-failing-builds`, `ios-simulator`), and
-multi-file site generation (`site-modernize`).
+tooling and ops (`coolify`, `circleci-failing-builds`, `ios-simulator`), Apple
+productivity apps
+(`apple-photos`, `apple-messages`, `apple-notes`), and multi-file site
+generation (`site-modernize`).
 
 ## Install
 
@@ -92,6 +94,19 @@ curl -fsSL "https://raw.githubusercontent.com/MikeSilvis/ai-skills/main/plugins/
 | `react-view-transitions` | Add Next.js App Router transitions with `next-view-transitions`. |
 | `swift-apple-engineering` | Apply pragmatic SwiftUI, UIKit interop, Swift concurrency, and testing defaults. |
 
+### Apple apps
+
+| Skill | Use when you want to… |
+| --- | --- |
+| `apple-photos` | Search photo metadata, review albums, export originals, and organize Photos safely. |
+| `apple-messages` | Search iMessage history or send a confirmed message or attachment. |
+| `apple-notes` | Search, read, create, replace, move within one account, or explicitly delete Apple Notes. |
+| `apple-reminders` | Review reminders and lists or make confirmed EventKit-backed changes. |
+| `apple-contacts` | Look up people and groups or safely create and update contact records. |
+| `apple-music` | Control Music playback and manage library or playlist state. |
+| `apple-safari` | Inspect scoped tabs or page text, navigate or close tabs, add Reading List items, and show bookmarks. |
+| `apple-shortcuts` | List, open for human review, run, and sign existing shortcuts with side-effect checks. |
+
 ### Site generation
 
 | Skill | Use when you want to… |
@@ -109,6 +124,19 @@ Most skills are plain instructions, but some lean on outside tools:
   emulator startup, the Android emulator binary plus at least one AVD.
 - **`ios-simulator`** — requires Xcode and a usable simulator runtime. It uses
   `npx serve-sim` for visual interaction.
+- **Apple app skills** — require macOS and the app-specific Automation, Full
+  Disk Access, Contacts, Reminders, or Photos permissions described by each
+  skill. Some use focused third-party CLIs; their command references include
+  exact preflight and setup guidance.
+- **`apple-shortcuts`** — uses Apple's built-in `shortcuts` CLI. A shortcut can
+  contain destructive or externally communicative actions, so unfamiliar
+  workflows must be reviewed before execution.
+
+Apple app data is private even when the helper runs locally: search results,
+message bodies, notes, photos, contacts, and other personal context can still
+enter the assistant's model context. These skills default to scoped reads,
+minimal output, and explicit confirmation for sends, deletes, broad changes,
+and other consequential writes.
 
 ## Repo layout
 

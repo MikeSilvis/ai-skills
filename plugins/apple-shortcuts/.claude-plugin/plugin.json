@@ -1,0 +1,9 @@
+{
+  "name": "apple-shortcuts",
+  "description": "List, open for human review, run, and sign Apple Shortcuts on macOS. Use when the user asks to discover shortcut names or folders, open a shortcut in the app, run an existing shortcut with file input or output, or sign a shortcut file for sharing.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-shortcuts"
+}
