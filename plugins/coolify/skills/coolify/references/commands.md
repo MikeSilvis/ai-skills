@@ -23,13 +23,17 @@ coolify context list
 coolify context add <name> <url> <token>     [-d|--default] [-f|--force]
 coolify context get <name>
 coolify context delete <name>
-coolify context set-token <name> <token>
+coolify context set-token <name> <token>      # swap the token on an existing context
 coolify context set-default <name>
 coolify context update <name> [--name <new>] [--url <new>] [--token <new>]
 coolify context use <name>
-coolify context verify                        # connection + auth check
+coolify context verify                        # connection + auth ONLY — does not check permissions
 coolify context version                       # Coolify API version
 ```
+
+Contexts (and therefore the token the CLI actually sends) live in `~/.config/coolify/config.json`. `~/.config/coolify/token` is not read by the CLI.
+
+`context verify` passes on a read-only token, which then 403s on every write — see Token Permissions in `SKILL.md` for the write probe.
 
 Coolify Cloud uses the prebuilt `cloud` context: `coolify context set-token cloud <token>`.
 
