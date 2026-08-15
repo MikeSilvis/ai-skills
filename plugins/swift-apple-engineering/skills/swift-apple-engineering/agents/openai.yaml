@@ -1,0 +1,4 @@
+interface:
+  display_name: "Swift Apple Engineering"
+  short_description: "SwiftUI, UIKit, concurrency, and testing defaults"
+  default_prompt: "Use $swift-apple-engineering to apply pragmatic SwiftUI, UIKit interop, concurrency, and testing defaults."

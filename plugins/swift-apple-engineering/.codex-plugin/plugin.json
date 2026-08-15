@@ -1,0 +1,28 @@
+{
+  "name": "swift-apple-engineering",
+  "version": "0.1.0",
+  "description": "Apply pragmatic SwiftUI, UIKit interop, concurrency, and testing defaults.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/swift-apple-engineering",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Swift Apple Engineering",
+    "shortDescription": "SwiftUI, UIKit, concurrency, and testing defaults.",
+    "longDescription": "Apply current Apple-platform defaults for SwiftUI state and composition, UIKit interoperability, structured concurrency, actor isolation, and pragmatic Swift Testing or XCTest coverage without imposing unnecessary architecture.",
+    "developerName": "Mike Silvis",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/swift-apple-engineering",
+    "defaultPrompt": [
+      "Use $swift-apple-engineering to apply pragmatic SwiftUI, UIKit interop, concurrency, and testing defaults."
+    ]
+  }
+}

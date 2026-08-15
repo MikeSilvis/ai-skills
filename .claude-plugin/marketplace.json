@@ -215,6 +215,17 @@
       "category": "development",
       "source": "./plugins/submit-pr",
       "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/submit-pr"
+    },
+    {
+      "name": "swift-apple-engineering",
+      "description": "Use whenever writing, reviewing, refactoring, or testing Swift code for Apple platforms, including SwiftUI state and view design, UIKit and SwiftUI interoperability, async/await and actor isolation, and Swift Testing or XCTest strategy.",
+      "author": {
+        "name": "Mike Silvis",
+        "url": "https://github.com/MikeSilvis"
+      },
+      "category": "development",
+      "source": "./plugins/swift-apple-engineering",
+      "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/swift-apple-engineering"
     }
   ]
 }
