@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Notes"
+  short_description: "Read and safely edit Notes with stable native IDs"
+  default_prompt: "Use $apple-notes to find or safely manage a note by stable ID, preserving folder context and previewing every complete plaintext write."

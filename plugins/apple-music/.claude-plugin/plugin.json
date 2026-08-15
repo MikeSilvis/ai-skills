@@ -1,0 +1,9 @@
+{
+  "name": "apple-music",
+  "description": "Control the Music app and work with the user's Music library on macOS through built-in AppleScript. Use when the user asks to inspect now-playing state, play or pause, skip, change volume, find library tracks or playlists, create a playlist, add a resolved track, or perform a carefully confirmed library edit.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-music"
+}

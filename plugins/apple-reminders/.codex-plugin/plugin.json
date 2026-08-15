@@ -1,0 +1,28 @@
+{
+  "name": "apple-reminders",
+  "version": "0.1.0",
+  "description": "Inspect and safely manage Apple Reminders through a public EventKit-backed CLI.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-reminders",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Apple Reminders",
+    "shortDescription": "Inspect and safely manage reminders, lists, and due dates.",
+    "longDescription": "Inspect, search, create, edit, complete, and delete Apple Reminders through remindctl's public EventKit integration, with stable-ID targeting, confirmation gates, and read-back verification.",
+    "developerName": "Mike Silvis",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use $apple-reminders to inspect or safely manage my Apple Reminders."
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-reminders"
+  }
+}

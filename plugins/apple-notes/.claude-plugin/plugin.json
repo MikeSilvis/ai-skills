@@ -1,0 +1,9 @@
+{
+  "name": "apple-notes",
+  "description": "Search, read, create, update, move within one account, and explicitly delete Apple Notes on macOS through a bundled native JXA bridge. Use when the user asks to browse Notes accounts or folders, find or read notes, create a note from complete plaintext, replace an attachment-free note's complete content, move a note between folders in the same account, or delete a specifically reconfirmed note.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-notes"
+}

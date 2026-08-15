@@ -243,6 +243,102 @@
         "authentication": "ON_INSTALL"
       },
       "category": "Engineering"
+    },
+    {
+      "name": "apple-photos",
+      "source": {
+        "source": "local",
+        "path": "./plugins/apple-photos"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "apple-messages",
+      "source": {
+        "source": "local",
+        "path": "./plugins/apple-messages"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "apple-notes",
+      "source": {
+        "source": "local",
+        "path": "./plugins/apple-notes"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "apple-reminders",
+      "source": {
+        "source": "local",
+        "path": "./plugins/apple-reminders"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "apple-contacts",
+      "source": {
+        "source": "local",
+        "path": "./plugins/apple-contacts"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "apple-music",
+      "source": {
+        "source": "local",
+        "path": "./plugins/apple-music"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "apple-safari",
+      "source": {
+        "source": "local",
+        "path": "./plugins/apple-safari"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "apple-shortcuts",
+      "source": {
+        "source": "local",
+        "path": "./plugins/apple-shortcuts"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
     }
   ]
 }

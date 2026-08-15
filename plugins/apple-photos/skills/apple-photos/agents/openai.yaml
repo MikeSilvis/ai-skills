@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Photos"
+  short_description: "Search, inspect, export, and organize Apple Photos"
+  default_prompt: "Use $apple-photos to inspect my Photos library safely, preview any writes, and carry out the requested workflow."

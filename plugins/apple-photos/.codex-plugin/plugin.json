@@ -1,0 +1,28 @@
+{
+  "name": "apple-photos",
+  "version": "0.1.0",
+  "description": "Search, inspect, export, and safely organize an Apple Photos library on macOS.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-photos",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Apple Photos",
+    "shortDescription": "Search, export, and safely organize Apple Photos on macOS.",
+    "longDescription": "Search an Apple Photos library by date, album, person, place, keyword, or metadata; inspect albums and assets; export originals, edits, and sidecars; and preview tightly scoped album or metadata changes before applying them.",
+    "developerName": "Mike Silvis",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-photos",
+    "defaultPrompt": [
+      "Use $apple-photos to inspect my Photos library safely and carry out the requested workflow."
+    ]
+  }
+}

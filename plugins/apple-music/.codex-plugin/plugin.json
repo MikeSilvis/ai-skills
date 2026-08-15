@@ -1,0 +1,29 @@
+{
+  "name": "apple-music",
+  "version": "0.1.0",
+  "description": "Control playback and safely manage the user's Music library on macOS.",
+  "author": {
+    "name": "Mike Silvis",
+    "url": "https://github.com/MikeSilvis"
+  },
+  "homepage": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-music",
+  "repository": "https://github.com/MikeSilvis/ai-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Apple Music",
+    "shortDescription": "Control playback and manage the user's Music library.",
+    "longDescription": "Inspect and control Music playback, find library tracks with cloud/local status, and manage regular playlists through macOS AppleScript with identity checks, network gates, confirmations, and read-back verification.",
+    "developerName": "Mike Silvis",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/MikeSilvis/ai-skills/tree/main/plugins/apple-music",
+    "defaultPrompt": [
+      "Use $apple-music to show what is playing without changing playback."
+    ]
+  }
+}

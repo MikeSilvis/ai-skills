@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Music"
+  short_description: "Control playback and manage the local Music library"
+  default_prompt: "Use $apple-music to control Music or perform the requested library workflow."
