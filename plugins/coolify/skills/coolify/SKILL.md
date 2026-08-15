@@ -39,34 +39,33 @@ brew install coollabsio/coolify-cli/coolify-cli
 
 ### Where the token actually lives
 
-**The CLI reads its token from the context stored in `~/.config/coolify/config.json`.** `~/.config/coolify/token` is only a convenience copy — writing to it changes nothing until the value is handed to `coolify context add`. Anyone who "fixes" the token by overwriting that file alone will watch the old token keep being used and conclude, wrongly, that the new one is broken too.
+**The CLI reads its token from the context stored in `~/.config/coolify/config.json`.** `~/.config/coolify/token` is *not* read by the CLI — writing to it changes nothing. Anyone who "fixes" the token by overwriting that file alone will watch the old token keep being used and conclude, wrongly, that the new one is broken too. Treat any file at that path as vestigial; it has held a live Postgres connection string, pasted there by a clipboard-based install recipe at a moment when the clipboard held a database URL from an earlier step.
 
-That file is also not guaranteed to hold a token. It has held a live Postgres connection string, pasted in by a clipboard-based install recipe at a moment when the clipboard held a database URL from an earlier step. So validate the shape before installing anything — a Coolify token is Laravel Sanctum format, `<id>|<48 chars>`:
+The durable source of truth is `~/Development/dotfiles/configs/env/machine/coolify-token`, and `dotfiles-sync` installs it into the context on every sync (see `restore_coolify_context` in `lib/dotfiles_sync.rb`). So the normal fix for a bad or missing token is: write the new one there, run `sync`, done. `COOLIFY_URL` rides along in `configs/env/machine/shell-env.sh`.
+
+Validate the shape before installing anything — a Coolify token is Laravel Sanctum format, `<id>|<48 chars>`:
 
 ```bash
-tr -d '\n' < ~/.config/coolify/token | grep -qE '^[0-9]+\|[A-Za-z0-9]{40,}$' && echo "looks like a token" || echo "NOT a token — do not install this"
+tr -d '\n\r' < ~/Development/dotfiles/configs/env/machine/coolify-token | grep -qE '^[0-9]+\|[A-Za-z0-9]{40,}$' && echo "looks like a token" || echo "NOT a token — do not install this"
 ```
 
 ### Adding a context
 
-`~/Development/dotfiles/.env` holds `COOLIFY_URL`. Mint a token at `${COOLIFY_URL}/security/api-tokens` — pick **write** (or root) unless the task is genuinely read-only.
-
-Prompt for the value rather than reading it from the clipboard or a file. `read -rs` keeps it off the screen, out of the shell history, and immune to whatever `pbpaste` happens to be holding:
+Mint a token at `${COOLIFY_URL}/security/api-tokens` — pick **write** (or root) unless the task is genuinely read-only. Then store it and let sync install it:
 
 ```bash
-URL=$(grep '^COOLIFY_URL=' ~/Development/dotfiles/.env | cut -d= -f2- | tr -d '"'); URL="${URL%/}"
-read -rs -p "Coolify API token: " T && printf '%s' "$T" > ~/.config/coolify/token && chmod 600 ~/.config/coolify/token
-coolify context add -d "${URL#https://}" "$URL" "$T" && coolify context verify
-unset T
+cd ~/Development/dotfiles && read -rs -p "Coolify token: " T && printf '%s' "$T" > configs/env/machine/coolify-token && unset T && sync
 ```
 
-Replacing the token on a context that already exists is a one-liner — no need to re-add it:
+`read -rs` rather than `pbpaste` on purpose: it keeps the value off the screen and out of shell history, and it cannot pick up whatever the clipboard happens to be holding. Commit the changed file — it is a tracked machine secret in the private dotfiles repo.
+
+To install a context by hand without sync — a machine that has no dotfiles checkout, or a second Coolify instance:
 
 ```bash
-read -rs -p "Coolify API token: " T && coolify context set-token <context-name> "$T" && coolify context verify; unset T
+read -rs -p "Coolify token: " T && coolify context add -d <host> "https://<host>" "$T" --force && coolify context verify; unset T
 ```
 
-Minting the token is a dashboard action behind the login. If a guardrail blocks that login, hand *only that step* to the user — stage everything else, then ask them to paste the token into the `read -rs` prompt.
+`context set-token <name> "$T"` swaps the token on a context that already exists. Minting the token is a dashboard action behind the login; if a guardrail blocks that login, hand *only that step* to the user — stage everything else, then ask them to paste into the `read -rs` prompt.
 
 `coolify context list` shows all contexts with tokens masked — safe to run.
 
@@ -83,8 +82,10 @@ So the only real check is to attempt a write. Probe with a throwaway key, then c
 ```bash
 coolify app env create <app-uuid> --key _WRITE_PROBE --value ok
 coolify app env list <app-uuid> --format json | jq -r '.[] | select(.key=="_WRITE_PROBE") | .uuid'
-coolify app env delete <app-uuid> <env-uuid-from-above>
+coolify app env delete <app-uuid> <env-uuid-from-above> --force
 ```
+
+`app env delete` prompts for a yes/no confirmation and dies with `failed to read confirmation: EOF` when it has no TTY, so the `--force` on that last line is required, not optional — without it the probe leaves `_WRITE_PROBE` behind on the app. `app env create` conveniently prints the new variable's UUID, so the middle command is only needed if you lost it.
 
 The probe is safe: Coolify does not hot-reload env changes, so an unused key that is created and deleted without a redeploy never reaches the running app.
 
