@@ -14,7 +14,7 @@ Skills live in two places:
 
 ### Always-on (no frontmatter)
 
-Content is injected into `~/.codex/AGENTS.md`, referenced by `~/.claude/CLAUDE.md`, and emitted to Cursor rules. Use for coding standards, style guides, and rules that should always apply.
+Content is written to `~/.codex/AGENTS.md` and `~/.claude/CLAUDE.md`, and emitted to the dotfiles-managed Cursor local plugin under `rules/`. Use for coding standards, style guides, and rules that should always apply.
 
 ```markdown
 # Code Style
@@ -25,7 +25,7 @@ Content is injected into `~/.codex/AGENTS.md`, referenced by `~/.claude/CLAUDE.m
 
 ### Command skill (YAML frontmatter)
 
-Becomes an invokable `/msilvis:<name>` command in Claude Code, a discoverable Codex skill, and a manual rule in Cursor.
+Becomes a native skill in Claude Code, Codex, and Cursor.
 
 ```markdown
 ---
@@ -40,15 +40,21 @@ Instructions go here...
 
 ## Workflow
 
-**Command skills** are symlinked from the dotfiles repo into `~/.claude/commands/msilvis:<name>.md` and `~/.agents/skills/msilvis-<name>/SKILL.md`, and copied into `~/.cursor/rules/<name>.mdc`. Edits to the source file take effect immediately for Claude and Codex after `dotfiles-sync` refreshes the generated links and copies.
+**Command skills** are symlinked from the dotfiles repo into each assistant's native skill directory, using the frontmatter `name` as the directory name:
 
-Command skills can bundle optional Codex resources in `configs/ai/skills/<name>/` (for example `configs/ai/skills/site-modernize/references/*.md`). `dotfiles-sync` symlinks those resources next to `~/.agents/skills/msilvis-<name>/SKILL.md` so the skill can keep bulky details behind progressive-disclosure references.
+- `~/.claude/skills/<frontmatter-name>/SKILL.md`
+- `~/.agents/skills/<frontmatter-name>/SKILL.md`
+- `~/.cursor/plugins/local/dotfiles-ai/skills/<frontmatter-name>/SKILL.md`
 
-**Always-on skills** are merged into `~/.codex/AGENTS.md`, included from `~/.claude/CLAUDE.md`, and emitted to Cursor. After editing, run `dotfiles-sync` to apply changes.
+After `dotfiles-sync` creates or refreshes these links, edits to the source file take effect immediately in all three assistants.
 
-**Important:** Always edit source files in `~/Development/dotfiles/configs/ai/skills/` for private skills or `~/Development/ai-skills/plugins/` for public plugin skills. Never edit `~/.claude/commands/`, `~/.claude/CLAUDE.md`, `~/.agents/skills/`, or `~/.codex/AGENTS.md` directly. Those are generated/symlinked outputs.
+Command skills can bundle optional resources in `configs/ai/skills/<name>/` (for example `configs/ai/skills/site-modernize/references/*.md`). `dotfiles-sync` symlinks those resources next to `SKILL.md` in all three native skill directories so the skill can keep bulky details behind progressive-disclosure references.
 
-All custom skills are prefixed with `msilvis:` (e.g., `/msilvis:my-skill`).
+**Always-on skills** are merged into `~/.codex/AGENTS.md` and `~/.claude/CLAUDE.md`, and emitted to `~/.cursor/plugins/local/dotfiles-ai/rules/`. After editing, run `dotfiles-sync` to apply changes.
+
+**Important:** Always edit source files in `~/Development/dotfiles/configs/ai/skills/` for private skills or `~/Development/ai-skills/plugins/` for public plugin skills. Never edit `~/.claude/skills/`, `~/.claude/CLAUDE.md`, `~/.agents/skills/`, `~/.codex/AGENTS.md`, or `~/.cursor/plugins/local/dotfiles-ai/` directly. Those are generated/symlinked outputs.
+
+Private skill frontmatter names are prefixed with `msilvis-` (for example, `msilvis-my-skill`).
 
 ## Distributable Codex Plugins
 
