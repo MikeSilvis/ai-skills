@@ -1,0 +1,26 @@
+schema_version: "1.1"
+name: current-tools
+description: Uses available native tools without falling back to standalone browsers or unscoped devices.
+execution:
+  max_turns: 8
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: |
+    Verify my PR's two unchecked items: (web) submit the settings form, and (iOS)
+    open the same screen. Do not run anything; give the verification plan.
+    The embedded browser is unavailable. Playwright MCP is installed. agent-device
+    is available with a session already bound to simulator A, where I signed in.
+    Simulator B is also booted for another task. The repo documents the iOS build
+    and app ID. It is absent from any central skill setup table. Xcode has Device Hub.
+graders:
+  - name: loads-skill
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?pr-test-runner"'
+  - name: current-surfaces
+    type: llm
+    criteria: |
+      PASS if it reports the web item blocked/skipped and unchecked without using
+      standalone Playwright, continues iOS verification from the repo instructions
+      through agent-device on the existing session/device A, preserves sign-in,
+      and avoids touching B. It must not use an unscoped booted selector, require
+      a central repo table entry, launch Simulator.app, or prescribe serve-sim.
