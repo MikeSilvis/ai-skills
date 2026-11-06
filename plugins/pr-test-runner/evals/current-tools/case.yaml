@@ -6,7 +6,8 @@ execution:
   allowed_tools: [Read, Glob, Grep, Skill]
   prompt: |
     Verify my PR's two unchecked items: (web) submit the settings form, and (iOS)
-    open the same screen. Do not run anything; give the verification plan.
+    open the same screen. You may load and read the applicable skill. Do not run
+    verification commands or make changes; give the verification plan.
     The embedded browser is unavailable. Playwright MCP is installed. agent-device
     is available with a session already bound to simulator A, where I signed in.
     Simulator B is also booted for another task. The repo documents the iOS build
