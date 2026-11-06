@@ -36,7 +36,9 @@ Discover available tools and read their current instructions before using them:
 
 - **Browser:** use the host's embedded browser and supported inspection tools.
   Do not start a standalone browser or a Playwright MCP server. If the embedded
-  browser is unavailable, report that limitation and continue independent checks.
+  browser is unavailable, leave the web item blocked and unchecked and continue
+  independent checks. Do not offer a Playwright fallback or ask the user to switch
+  browsers; wait for the required browser to become available.
 - **iOS/Android:** use the upstream `agent-device` skill and its platform guidance.
   Prefer the connected tools; otherwise inspect the installed CLI help. Keep a
   named session and explicit device identity throughout the run. Do not reproduce
